@@ -328,29 +328,6 @@ export default function App() {
                 <span>Contact Us</span>
               </a>
             </div>
-
-            {/* Factual Studio Metadata Strip */}
-            <div className="hero-anim-item hero-telemetry-strip">
-              <div className="telemetry-item">
-                <span className="telemetry-label">Studio Origin</span>
-                <strong className="telemetry-value">Odisha, India</strong>
-              </div>
-              <div className="telemetry-divider"></div>
-              <div className="telemetry-item">
-                <span className="telemetry-label">Primary Stack</span>
-                <strong className="telemetry-value">React &bull; TypeScript &bull; WebGL</strong>
-              </div>
-              <div className="telemetry-divider"></div>
-              <div className="telemetry-item">
-                <span className="telemetry-label">Focus Areas</span>
-                <strong className="telemetry-value">Systems, Vision &amp; Web</strong>
-              </div>
-              <div className="telemetry-divider"></div>
-              <div className="telemetry-item">
-                <span className="telemetry-label">Studio Motto</span>
-                <strong className="telemetry-value font-serif">यथा कल्पना तथा रचना</strong>
-              </div>
-            </div>
           </div>
         </section>
 

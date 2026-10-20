@@ -627,66 +627,7 @@ a {
   justify-content: center;
   gap: 18px;
   flex-wrap: wrap;
-  margin-bottom: 64px;
-}
-
-/* Live Telemetry Strip */
-.hero-telemetry-strip {
-  display: inline-flex;
-  align-items: center;
-  gap: 24px;
-  padding: 14px 28px;
-  background: var(--bg-card);
-  backdrop-filter: blur(14px);
-  border: 1px solid var(--border-subtle);
-  border-radius: 9999px;
-  box-shadow: var(--shadow-card);
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.telemetry-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-}
-
-.telemetry-label {
-  font-family: var(--font-mono);
-  font-size: 0.685rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-}
-
-.telemetry-value {
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.telemetry-divider {
-  width: 1px;
-  height: 24px;
-  background: var(--border-divider);
-}
-
-.text-emerald {
-  color: #10B981;
-}
-
-.live-indicator-pulse {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: #10B981;
-  box-shadow: 0 0 8px #10B981;
-  animation: pulse-dot 1.8s infinite ease-in-out;
+  margin-bottom: 0;
 }
 
 /* --------------------------------------------------------------------------
@@ -1721,26 +1662,7 @@ body.mobile-menu-locked {
 
   .hero-cta-group {
     gap: 12px;
-    margin-bottom: 36px;
-  }
-
-  .hero-telemetry-strip {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    padding: 16px 20px;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 480px;
-    text-align: left;
-  }
-
-  .telemetry-divider {
-    display: none;
-  }
-
-  .telemetry-item {
-    align-items: flex-start;
+    margin-bottom: 0;
   }
 
   /* Capabilities & Work */
@@ -1930,12 +1852,6 @@ body.mobile-menu-locked {
     width: 100%;
     justify-content: center;
     min-height: 44px;
-  }
-
-  .hero-telemetry-strip {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 14px 16px;
   }
 
   .dual-destinations-group {
