@@ -1725,23 +1725,10 @@ a {
 .modal-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 16px;
   margin-top: 14px;
   flex-wrap: wrap;
-}
-
-.modal-email-alt {
-  font-family: var(--font-mono);
-  font-size: 0.775rem;
-  color: var(--text-muted);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color var(--transition-normal);
-}
-
-.modal-email-alt:hover {
-  color: var(--color-brand-primary);
 }
 
 .modal-buttons {
@@ -2141,9 +2128,6 @@ body.mobile-menu-locked {
     min-height: 44px;
   }
 
-  .modal-email-alt {
-    text-align: center;
-  }
 }
 
 @media (max-width: 480px) {

@@ -9,7 +9,6 @@ import {
   ExternalLink, 
   Github, 
   Linkedin, 
-  Mail, 
   Sparkles, 
   Send, 
   Layers, 
@@ -27,9 +26,7 @@ import {
   Sun, 
   Moon,
   Workflow,
-  Clock,
-  Copy,
-  Check
+  Clock
 } from 'lucide-react';
 
 export default function App() {
@@ -53,18 +50,7 @@ export default function App() {
   // Modal & Toast States
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjectType, setSelectedProjectType] = useState('Web Architecture');
-  const [copiedEmail, setCopiedEmail] = useState(false);
   const [showToast, setShowToast] = useState(false);
-
-  // Copy Email to Clipboard Handler with spring feedback
-  const handleCopyEmail = (e) => {
-    e.preventDefault();
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText('myselfazure@gmail.com');
-      setCopiedEmail(true);
-      setTimeout(() => setCopiedEmail(false), 2600);
-    }
-  };
 
   // Dynamic Cursor Light Spotlight Handler
   const handleCtaMouseMove = (e) => {
@@ -721,11 +707,6 @@ export default function App() {
               onMouseMove={handleCtaMouseMove}
             >
               <div className="cta-content-column">
-                <div className="badge-pill cta-badge">
-                  <span className="badge-dot"></span>
-                  <span>Inception &bull; Direct Contact</span>
-                </div>
-
                 <h2 className="cta-headline">
                   <span className="cta-subhead-sans">LET'S DISCUSS</span>
                   <span className="cta-display-serif text-gradient-gold">Your Next Project</span>
@@ -756,7 +737,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Primary Action & Interactive Copy Email */}
+                {/* Primary Action */}
                 <div className="cta-actions-row">
                   <button 
                     className="btn btn-brand cta-primary-btn" 
@@ -764,26 +745,6 @@ export default function App() {
                   >
                     <span>Start a Conversation</span>
                     <ArrowRight className="icon-arrow" size={16} />
-                  </button>
-
-                  <button 
-                    type="button"
-                    className={`btn btn-glass copy-email-btn ${copiedEmail ? 'copied' : ''}`}
-                    onClick={handleCopyEmail}
-                    title="Click to copy email address"
-                  >
-                    {copiedEmail ? (
-                      <>
-                        <Check size={15} className="text-emerald" />
-                        <span>Copied to Clipboard!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Mail size={15} />
-                        <span>myselfazure@gmail.com</span>
-                        <span className="copy-badge"><Copy size={11} /> Copy</span>
-                      </>
-                    )}
                   </button>
                 </div>
               </div>
@@ -848,15 +809,6 @@ export default function App() {
             </div>
 
             <div className="footer-channels-block">
-              <a 
-                href="mailto:myselfazure@gmail.com" 
-                className="footer-channel-item"
-                title="Send Direct Email"
-              >
-                <Mail size={13} />
-                <span>myselfazure@gmail.com</span>
-              </a>
-              <span className="footer-channel-sep">/</span>
               <a 
                 href="https://github.com/im-chandanmahapatra" 
                 target="_blank" 
@@ -955,12 +907,6 @@ export default function App() {
               </div>
 
               <div className="modal-actions">
-                <a 
-                  href="mailto:myselfazure@gmail.com" 
-                  className="modal-email-alt"
-                >
-                  Or email directly: myselfazure@gmail.com
-                </a>
                 <div className="modal-buttons">
                   <button type="button" className="btn btn-glass" onClick={() => setIsModalOpen(false)}>
                     Cancel
