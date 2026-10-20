@@ -82,19 +82,19 @@ The website operates across four distinct visual and interactive strata:
 ### Section 04: Verified Production Showcase (#work)
 - **Visual Layout**: Center headline with category filter tabs:
   `[All Platforms]  [Edge AI & Vision]  [FinTech & Telemetry]  [Digital Health]  [Event Systems]  [Commerce]`
-- **The Six Verified Production Platforms**:
+- **The Six Collaborative Platforms**:
   1. **ARGUS AI (PPE Safety)**: Edge-native computer vision industrial safety triage platform (YOLOv11s ONNX, NestJS 11 WebSocket, 100% offline LAN resilience).
-  2. **TradeVault / RiskRule**: Institutional trading journal & discipline analytics platform (FIFO lot accounting, broker sync via Dhan/AngelOne, Lunar AI coach).
-  3. **DoseLoop**: Calm medication companion & adherence engine (Custom 4-state dose machine, Family Circle caregiver visibility, SOS emergency ping).
-  4. **HarvestIQ**: Cryptocurrency tax-loss harvesting dashboard (Virtualized loss ranking tables, cost basis calculations, live WebSocket feed).
+  2. **RiskRule**: Institutional trading journal & systematic risk management terminal (FIFO lot accounting, multi-broker sync via Dhan/AngelOne, risk telemetry at https://riskrule.in/).
+  3. **TEJAS 2026 — The Fresh Bloom**: Dual digital invitation experiences for Srusti Academy freshers' celebration (Student induction app + faculty personalized greeting system).
+  4. **DoseLoop**: Calm medication companion & adherence engine (Custom 4-state dose machine, Family Circle caregiver visibility, SOS emergency ping).
   5. **CrossFire 2026**: High-capacity state-level campus talent hunt operations platform (Cryptographic QR door scanning, live judge scoring matrix).
-  6. **PURE GO**: Luxury direct-to-consumer product launch & commerce engine (Razorpay SDK integration, Framer Motion layouts).
+  6. **Social Media Project**: Privacy-conscious creator networking platform (In active development · Coming soon).
 - **Card Anatomy**:
-  - Category Badge & Lead Engineer Attribution.
+  - Category Badge & Collaborative Attribution ("Built by the To Inspire team").
   - Project Title & Problem Statement.
   - Architectural Summary & Key Technical Innovations.
   - Technology Stack Chips.
-  - Direct Action Links: `[Launch Application ↗]` (Live demo) & `[Inspect Source ↗]` (GitHub repository).
+  - Direct Action Links: Live demo/platform link & source code repository. Discoverable dual links for TEJAS 2026; clear in-development status badge for upcoming project.
 
 ---
 
@@ -122,17 +122,17 @@ The website operates across four distinct visual and interactive strata:
      - Social Links: Verified LinkedIn and GitHub (`im-chandanmahapatra`).
   2. **S Akash Dora (Co-Founder & Developer)**:
      - Focus: Computer Vision, Edge AI, Cloud Infrastructure, DevOps & High-Capacity Event Systems.
-     - Projects Led: ARGUS AI (BPUT Hackathon PS06), CrossFire 2026, TradeVault.
+     - Projects: ARGUS AI (BPUT Hackathon PS06), CrossFire 2026, RiskRule.
      - Social Links: Verified LinkedIn and GitHub (`sakashdora`).
 
 ---
 
-### Section 07: Direct Consultation Monolith (#contact)
+### Section 07: Direct Contact Section (#contact)
 - **Visual Layout**: Full-width architectural banner with subtle vertical watermark of *"यथा कल्पना तथा रचना"*.
 - **Content**:
-  - Headline: *"Ready to Build Something with Lasting Architectural Integrity?"*
-  - Narrative: Discuss your product roadmap directly with Chandan and Akash.
-  - Dual CTAs: `"Initiate Project Proposal"` & `"Direct Inquiry (Email)"`.
+  - Headline: *"Let's Discuss Your Project"*
+  - Narrative: Connect with the To Inspire team to explore new applications, digital experiences, and technical collaborations.
+  - Direct Actions: `"Send a Message"` & direct email link `myselfazure@gmail.com`.
 
 ---
 

@@ -3,93 +3,96 @@ export const projects = [
     id: 'argus-ai',
     title: 'ARGUS AI',
     subtitle: 'Edge-First Industrial Safety & Hazard Intelligence System',
-    description: 'An enterprise-grade computer vision platform engineered for harsh factory environments. Delivers real-time PPE compliance (Hardhat, Hi-Vis Vest, Gloves, Boots) and active hazard triage (Fire, Smoke, Restricted Smoking) with sub-second alert latency, GPIO siren relays, and 100% offline LAN resilience.',
+    description: 'An industrial computer vision platform engineered for factory safety. Delivers real-time PPE compliance monitoring (Hardhat, Hi-Vis Vest, Gloves, Boots) and active hazard triage (Fire, Smoke, Restricted Zones) with low alert latency, GPIO siren relays, and offline LAN resilience.',
     category: 'Edge AI & Vision',
     badgeColor: 'badge-amber',
     accentColor: '#F59E0B',
-    author: 'S Akash Dora',
-    authorRole: 'Co-Founder & Developer',
+    collaboration: 'Built by the To Inspire team',
     github: 'https://github.com/sakashdora/PPE-PROJECT.git',
     live: 'https://github.com/sakashdora/PPE-PROJECT',
-    tags: ['YOLOv11s ONNX', 'OpenVINO', 'NestJS 11 WS', 'Next.js 15', 'Prisma ORM', 'BPUT PS06']
+    tags: ['YOLOv11s ONNX', 'OpenVINO', 'NestJS WS', 'Next.js 15', 'Prisma ORM']
   },
   {
-    id: 'tradevault',
-    title: 'TradeVault / RiskRule',
-    subtitle: 'Institutional Trading Journal & Market Intelligence Terminal',
-    description: 'An institutional-grade trading terminal developed in collaboration with AssetMagnets, Bhubaneswar. Integrates automated broker trade synchronization (Dhan, AngelOne), FIFO lot accounting, Lunar AI behavioral discipline coaching, and real-time drawdown risk telemetry.',
+    id: 'riskrule',
+    title: 'RiskRule',
+    subtitle: 'Institutional Trading Journal & Systematic Risk Management Terminal',
+    description: 'A quantitative trading journal and systematic risk management terminal developed in collaboration with AssetMagnets. Provides automated multi-broker trade synchronization (Dhan, AngelOne), FIFO lot accounting, risk telemetry, and rule-based trade discipline analytics.',
     category: 'FinTech & Analytics',
     badgeColor: 'badge-purple',
     accentColor: '#8B5CF6',
-    author: 'S Akash Dora & Chandan Mahapatra',
-    authorRole: 'Co-Founders & Developers',
+    collaboration: 'In collaboration with AssetMagnets',
     github: 'https://github.com/Pritam-Pattanaik/riskrule.git',
-    live: 'https://github.com/sakashdora/Trade_vault',
-    tags: ['React', 'TypeScript', 'Zustand', 'Recharts', 'Node.js', 'PostgreSQL', 'Lunar AI']
+    live: 'https://riskrule.in/',
+    tags: ['React', 'TypeScript', 'Zustand', 'Recharts', 'PostgreSQL', 'Risk Telemetry']
+  },
+  {
+    id: 'tejas-2026',
+    title: 'TEJAS 2026 — The Fresh Bloom',
+    subtitle: 'Coordinated Digital Invitation Experiences for Student & Faculty Convocations',
+    description: 'Coordinated digital invitation systems engineered for Srusti Academy’s annual freshers’ celebration. Features two tailored audience flows: a dynamic student induction platform and an editorial, ceremony-focused faculty invitation with personalized mentor greeting dialogues and event agenda.',
+    category: 'Digital Experiences',
+    badgeColor: 'badge-pink',
+    accentColor: '#EC4899',
+    collaboration: 'Built by the To Inspire team',
+    isDualDestination: true,
+    destinations: [
+      {
+        label: 'Student Invitation',
+        url: 'https://freshers-party-beige.vercel.app/',
+        audience: 'Students & Juniors'
+      },
+      {
+        label: 'Faculty Invitation',
+        url: 'https://teacherinvitation.vercel.app/',
+        audience: 'Faculty & Mentors'
+      }
+    ],
+    tags: ['Interactive Audio', 'Editorial Motion', 'Tailored Dialogues', 'Responsive Design']
   },
   {
     id: 'doseloop',
     title: 'DoseLoop',
     subtitle: 'Calm Medication Companion & Adherence State Machine',
-    description: 'A privacy-first healthcare companion built to eliminate alert fatigue for patients managing complex, multi-dose prescriptions. Driven by a deterministic 4-state dose engine (planned / taken / skipped / missed), a granular Family Circle caregiver sharing model, and calm scheduled reminders.',
+    description: 'A privacy-first healthcare companion built to reduce alert fatigue for complex prescriptions. Driven by a deterministic 4-state dose engine (planned, taken, skipped, missed) with caregiver circle sharing and scheduled reminders.',
     category: 'Digital Health',
     badgeColor: 'badge-emerald',
     accentColor: '#10B981',
-    author: 'Chandan Mahapatra',
-    authorRole: 'Co-Founder & Developer',
+    collaboration: 'Built by the To Inspire team',
     github: 'https://github.com/im-chandanmahapatra/DOSELOOP.git',
     live: 'https://doseloop.vercel.app/',
-    tags: ['React', 'TypeScript', 'TanStack Router', 'TanStack Query', 'TailwindCSS', 'Supabase']
-  },
-  {
-    id: 'harvestiq',
-    title: 'HarvestIQ',
-    subtitle: 'Cryptocurrency Tax-Loss Harvesting & Cost Basis Engine',
-    description: 'A production-grade portfolio optimization dashboard that turns complex crypto transaction histories into a single readable surface. Automatically ranks realized and unrealized tax-loss opportunities by net dollar impact, calculates cost basis, and streams market feeds via WebSockets.',
-    category: 'FinTech & Analytics',
-    badgeColor: 'badge-blue',
-    accentColor: '#3B82F6',
-    author: 'Chandan Mahapatra',
-    authorRole: 'Co-Founder & Developer',
-    github: 'https://github.com/dev-chadan24/harvestiq-tax-dashboard.git',
-    live: 'https://harvest-tax-dashboard.vercel.app/',
-    tags: ['Next.js', 'TypeScript', 'TailwindCSS', 'Recharts', 'WebSockets', 'FinTech UI']
+    tags: ['React', 'TypeScript', 'TanStack Router', 'TanStack Query', 'Supabase']
   },
   {
     id: 'crossfire',
     title: 'CrossFire 2026',
     subtitle: 'State-Level Campus Talent Hunt Operations Platform',
-    description: 'The official operations platform for Srusti Academy of Graduate Studies (SAGS), Bhubaneswar. Coordinates multi-college participant intake across six competitive tracks, real-time cryptographic QR door access validation, live judge score evaluation matrices, and dynamic computed leaderboards.',
-    category: 'Event Operations',
+    description: 'The operations platform for Srusti Academy of Graduate Studies (SAGS), Bhubaneswar. Coordinates participant intake across six competitive tracks, real-time cryptographic QR door check-in, live judge score evaluation matrices, and dynamic calculated leaderboards.',
+    category: 'Digital Experiences',
     badgeColor: 'badge-cyan',
     accentColor: '#06B6D4',
-    author: 'S Akash Dora',
-    authorRole: 'Co-Founder & Developer',
+    collaboration: 'Built by the To Inspire team',
     github: 'https://github.com/sakashdora/CrossFire.git',
     live: 'https://cross-fire-three.vercel.app/',
-    tags: ['TypeScript 5.7', 'React 18', 'Vite 6', 'Supabase Auth & DB', 'TailwindCSS', 'Crypto QR']
+    tags: ['React 18', 'TypeScript', 'Supabase Auth & DB', 'Crypto QR', 'Vite 6']
   },
   {
-    id: 'pure-go',
-    title: 'PURE GO',
-    subtitle: 'Luxury D2C Product Launch & Commerce Engine',
-    description: 'A bespoke direct-to-consumer beverage product launch platform. Combines high-fashion editorial art direction with fluid Framer Motion product showcases, real-time cart persistence, multi-currency support, and live Razorpay payment gateway integration.',
-    category: 'Commerce',
-    badgeColor: 'badge-pink',
-    accentColor: '#EC4899',
-    author: 'Chandan Mahapatra',
-    authorRole: 'Co-Founder & Developer',
-    github: 'https://github.com/im-chandanmahapatra/pure-go.git',
-    live: 'https://github.com/im-chandanmahapatra/pure-go',
-    tags: ['React', 'TypeScript', 'Vite', 'TailwindCSS', 'Framer Motion', 'Razorpay SDK']
+    id: 'social-media-project',
+    title: 'Social Media Project',
+    subtitle: 'Status: Coming Soon',
+    description: 'A privacy-conscious social networking and creator platform currently under active development by the To Inspire engineering team. Interface architecture, media rendering pipelines, and distributed data systems are being refined prior to public release.',
+    category: 'Digital Experiences',
+    badgeColor: 'badge-indigo',
+    accentColor: '#6366F1',
+    collaboration: 'Built by the To Inspire team',
+    isUpcoming: true,
+    tags: ['In Active Development', 'TypeScript', 'Distributed State', 'Coming Soon']
   }
 ];
 
 export const projectCategories = [
-  'All Platforms',
+  'All Work',
   'Edge AI & Vision',
   'FinTech & Analytics',
   'Digital Health',
-  'Event Operations',
-  'Commerce'
+  'Digital Experiences'
 ];

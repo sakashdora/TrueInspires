@@ -311,16 +311,24 @@ export default function ThreeCanvas({ theme = 'dark' }) {
           targetScale = 0.95 - 0.15 * p;
         }
 
+        // Responsive multiplier for mobile viewports to prevent text obstruction
+        const isMobile = window.innerWidth < 768;
+        const responsiveXMult = isMobile ? 0.25 : 1.0;
+        const responsiveScaleMult = isMobile ? 0.62 : 1.0;
+
+        const finalTargetX = targetX * responsiveXMult;
+        const finalTargetScale = targetScale * responsiveScaleMult;
+
         // Apply mouse parallax on top of target position
-        emblemGroup.position.x += (targetX + mouseX * 0.45 - emblemGroup.position.x) * 0.06;
-        emblemGroup.position.y += (targetY - mouseY * 0.35 - emblemGroup.position.y) * 0.06;
+        emblemGroup.position.x += (finalTargetX + mouseX * (isMobile ? 0.15 : 0.45) - emblemGroup.position.x) * 0.06;
+        emblemGroup.position.y += (targetY - mouseY * (isMobile ? 0.12 : 0.35) - emblemGroup.position.y) * 0.06;
         emblemGroup.position.z += (targetZ - emblemGroup.position.z) * 0.06;
 
         emblemGroup.rotation.x += (targetRotX + mouseY * 0.25 - emblemGroup.rotation.x) * 0.06;
         emblemGroup.rotation.y += (targetRotY + mouseX * 0.35 - emblemGroup.rotation.y) * 0.06;
 
         const currentScale = emblemGroup.scale.x;
-        const newScale = currentScale + (targetScale - currentScale) * 0.06;
+        const newScale = currentScale + (finalTargetScale - currentScale) * 0.06;
         emblemGroup.scale.set(newScale, newScale, newScale);
 
         // Particle field subtle orbit

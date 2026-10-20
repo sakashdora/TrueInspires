@@ -25,7 +25,8 @@ import {
   Compass, 
   Sun, 
   Moon,
-  Workflow
+  Workflow,
+  Clock
 } from 'lucide-react';
 
 export default function App() {
@@ -48,14 +49,12 @@ export default function App() {
 
   // Modal & Toast States
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState('project');
-  const [selectedProjectType, setSelectedProjectType] = useState('Edge AI & Vision');
   const [showToast, setShowToast] = useState(false);
 
   // Projects Filter State
-  const [selectedCategory, setSelectedCategory] = useState('All Platforms');
+  const [selectedCategory, setSelectedCategory] = useState('All Work');
 
-  // Team Active Index
+  // Team Active Index for Mobile Carousel
   const [activeTeamIndex, setActiveTeamIndex] = useState(0);
 
   // Refs for animations
@@ -71,6 +70,28 @@ export default function App() {
   const toggleTheme = () => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
+
+  // Close mobile menu on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+        setIsModalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Lock body scroll when mobile menu is open on small screens
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.classList.add('mobile-menu-locked');
+    } else {
+      document.body.classList.remove('mobile-menu-locked');
+    }
+    return () => document.body.classList.remove('mobile-menu-locked');
+  }, [mobileMenuOpen]);
 
   // Scroll detection for sticky navbar & active section indicator
   useEffect(() => {
@@ -101,12 +122,12 @@ export default function App() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo('.hero-anim-item', 
-        { y: 32, opacity: 0 },
+        { y: 28, opacity: 0 },
         { 
           y: 0, 
           opacity: 1, 
-          duration: 1.1, 
-          stagger: 0.14, 
+          duration: 1.0, 
+          stagger: 0.12, 
           ease: 'power3.out',
           delay: 0.15
         }
@@ -130,7 +151,7 @@ export default function App() {
   };
 
   // Filter projects by category
-  const filteredProjects = selectedCategory === 'All Platforms'
+  const filteredProjects = selectedCategory === 'All Work'
     ? projects
     : projects.filter(p => p.category === selectedCategory);
 
@@ -185,7 +206,7 @@ export default function App() {
               className={`nav-link ${activeNav === 'work' ? 'active' : ''}`} 
               onClick={() => setMobileMenuOpen(false)}
             >
-              Engineering
+              Work
             </a>
             <a 
               href="#about" 
@@ -206,8 +227,19 @@ export default function App() {
               className={`nav-link ${activeNav === 'contact' ? 'active' : ''}`} 
               onClick={() => setMobileMenuOpen(false)}
             >
-              Initiate
+              Contact
             </a>
+
+            {/* Mobile Drawer Action Button */}
+            <div className="mobile-drawer-cta">
+              <button 
+                className="btn btn-brand w-full" 
+                onClick={() => { setMobileMenuOpen(false); setIsModalOpen(true); }}
+              >
+                <span>Get in Touch</span>
+                <ArrowRight className="icon-arrow" size={15} />
+              </button>
+            </div>
           </nav>
 
           {/* Nav Actions: Theme Toggle & CTA */}
@@ -233,16 +265,18 @@ export default function App() {
             </button>
 
             <button 
-              className="btn btn-brand nav-cta" 
-              onClick={() => { setIsModalOpen(true); setModalType('project'); }}
+              className="btn btn-brand nav-cta desktop-only-cta" 
+              onClick={() => setIsModalOpen(true)}
             >
-              <span>Build Together</span>
+              <span>Get in Touch</span>
               <ArrowRight className="icon-arrow" size={15} />
             </button>
+
             <button 
               className={`mobile-menu-toggle ${mobileMenuOpen ? 'active' : ''}`} 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle Navigation"
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileMenuOpen}
             >
               <span></span>
               <span></span>
@@ -252,19 +286,28 @@ export default function App() {
         </div>
       </header>
 
+      {/* Mobile Drawer Overlay Backdrop */}
+      {mobileMenuOpen && (
+        <div 
+          className="mobile-backdrop" 
+          onClick={() => setMobileMenuOpen(false)} 
+          aria-hidden="true"
+        />
+      )}
+
       <main className="main-content">
-        {/* HERO SECTION (THE ENGINEERING PROCLAMATION) */}
+        {/* HERO SECTION */}
         <section className="hero-section" id="home" ref={heroContentRef}>
           <div className="hero-container">
             {/* Top Eyebrow Badge Pill */}
             <div className="hero-anim-item badge-pill hero-badge">
               <Sparkles className="sparkle-icon" size={13} />
-              <span>Autonomous Engineering Studio</span>
+              <span>Creative Engineering Studio</span>
               <span className="badge-divider">&bull;</span>
               <span className="badge-sanskrit-accent">यथा कल्पना तथा रचना</span>
             </div>
 
-            {/* Main Editorial Headline (Anti-Generic Copy) */}
+            {/* Main Editorial Headline */}
             <h1 className="hero-anim-item hero-title">
               Software Engineered with Deliberate Craft<br />
               <span className="text-gradient-gold">&amp; Architectural Rigor</span>
@@ -272,65 +315,58 @@ export default function App() {
 
             {/* Factual Subtitle */}
             <p className="hero-anim-item hero-subtitle">
-              Founded by <strong>Chandan Mahapatra</strong> and <strong>S Akash Dora</strong> in Odisha, To Inspire architects bespoke web applications, edge AI surveillance systems, and high-throughput financial telemetry platforms.
+              Founded by <strong>Chandan Mahapatra</strong> and <strong>S Akash Dora</strong> in Odisha, To Inspire designs and builds dependable web applications, edge AI systems, and interactive digital experiences.
             </p>
 
             {/* Action Group */}
             <div className="hero-anim-item hero-cta-group">
               <a href="#work" className="btn btn-brand">
-                <span>Review Engineering Capabilities</span>
+                <span>Explore Our Work</span>
                 <ArrowRight className="icon-arrow" size={16} />
               </a>
-              <button 
-                className="btn btn-glass" 
-                onClick={() => { setIsModalOpen(true); setModalType('consult'); }}
-              >
-                <span>Direct Founder Consultation</span>
-                <span className="btn-beacon-dot"></span>
-              </button>
+              <a href="#contact" className="btn btn-glass">
+                <span>Contact Us</span>
+              </a>
             </div>
 
-            {/* Live Verified Studio Telemetry Strip */}
+            {/* Factual Studio Metadata Strip */}
             <div className="hero-anim-item hero-telemetry-strip">
               <div className="telemetry-item">
-                <span className="telemetry-label">Architecture</span>
-                <strong className="telemetry-value">WebGL &bull; React 18 &bull; Vite</strong>
-              </div>
-              <div className="telemetry-divider"></div>
-              <div className="telemetry-item">
                 <span className="telemetry-label">Studio Origin</span>
-                <strong className="telemetry-value">Bhubaneswar &amp; Jeypore, Odisha</strong>
+                <strong className="telemetry-value">Odisha, India</strong>
               </div>
               <div className="telemetry-divider"></div>
               <div className="telemetry-item">
-                <span className="telemetry-label">Status</span>
-                <strong className="telemetry-value text-emerald">
-                  <span className="live-indicator-pulse"></span>
-                  Live &bull; Accepting Q4 Engagements
-                </strong>
+                <span className="telemetry-label">Primary Stack</span>
+                <strong className="telemetry-value">React &bull; TypeScript &bull; WebGL</strong>
               </div>
               <div className="telemetry-divider"></div>
               <div className="telemetry-item">
-                <span className="telemetry-label">Verified Platforms</span>
-                <strong className="telemetry-value">6 Production Codebases</strong>
+                <span className="telemetry-label">Focus Areas</span>
+                <strong className="telemetry-value">Systems, Vision &amp; Web</strong>
+              </div>
+              <div className="telemetry-divider"></div>
+              <div className="telemetry-item">
+                <span className="telemetry-label">Studio Motto</span>
+                <strong className="telemetry-value font-serif">यथा कल्पना तथा रचना</strong>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION: FOUR PILLARS OF STUDIO ENGINEERING (#services) */}
+        {/* SECTION: CAPABILITIES (#services) */}
         <section className="section services-section" id="services">
           <div className="container">
             <div className="section-head-dual">
               <div>
                 <div className="badge-pill">Capabilities</div>
                 <h2 className="section-heading">
-                  Four Pillars of<br />
-                  <span className="text-gradient-gold">Studio Engineering</span>
+                  Technical Focus &amp;<br />
+                  <span className="text-gradient-gold">Core Capabilities</span>
                 </h2>
               </div>
               <p className="section-lead-paragraph">
-                From zero-latency edge computer vision to high-throughput financial analytics, we build resilient, beautiful software that solves verifiable operational problems.
+                We design and build reliable software to solve operational challenges—from low-latency on-device computer vision to high-throughput financial analytics.
               </p>
             </div>
 
@@ -340,16 +376,16 @@ export default function App() {
                 <div className="service-icon-box">
                   <Monitor size={22} />
                 </div>
-                <div className="service-meta">01 / ARCHITECTURE</div>
-                <h3 className="service-title">Full-Stack Web &amp; Cloud Platforms</h3>
+                <div className="service-meta">01 / WEB ARCHITECTURE</div>
+                <h3 className="service-title">Full-Stack Web Applications</h3>
                 <p className="service-text">
-                  High-throughput React and Next.js architectures, relational database schemas, and zero-downtime serverless pipelines built for longevity and speed.
+                  Responsive React and Next.js applications engineered with clean component hierarchies, relational database modeling, and performant state management.
                 </p>
                 <div className="service-tags">
                   <span className="service-tag">Next.js &amp; Vite</span>
+                  <span className="service-tag">TypeScript</span>
                   <span className="service-tag">PostgreSQL</span>
                   <span className="service-tag">Supabase</span>
-                  <span className="service-tag">Cloud-Native</span>
                 </div>
               </div>
 
@@ -359,9 +395,9 @@ export default function App() {
                   <Cpu size={22} />
                 </div>
                 <div className="service-meta">02 / VISION &amp; AI</div>
-                <h3 className="service-title">Edge Computer Vision &amp; AI Systems</h3>
+                <h3 className="service-title">Edge Computer Vision &amp; AI</h3>
                 <p className="service-text">
-                  Edge-native ONNX and OpenVINO inference engines for sub-second industrial hazard detection, sensor triage, and behavioral LLM assistant pipelines.
+                  On-device ONNX and OpenVINO inference pipelines for industrial safety compliance, video hazard triage, and low-latency real-time telemetry.
                 </p>
                 <div className="service-tags">
                   <span className="service-tag">YOLOv11s ONNX</span>
@@ -376,16 +412,16 @@ export default function App() {
                 <div className="service-icon-box">
                   <Palette size={22} />
                 </div>
-                <div className="service-meta">03 / ART DIRECTION</div>
-                <h3 className="service-title">Dual-Theme Art Direction &amp; Systems</h3>
+                <div className="service-meta">03 / DIGITAL CRAFT</div>
+                <h3 className="service-title">Interactive Digital Experiences</h3>
                 <p className="service-text">
-                  Bespoke typography hierarchies, real-time WebGL 3D choreography, and micro-interactions calibrated for WCAG 2.1 AA contrast and zero cognitive fatigue.
+                  Bespoke art direction, accessible typography, and smooth Three.js WebGL interactions designed to run consistently across desktop and mobile devices.
                 </p>
                 <div className="service-tags">
                   <span className="service-tag">Three.js WebGL</span>
-                  <span className="service-tag">Editorial Type</span>
-                  <span className="service-tag">Tactile UI</span>
                   <span className="service-tag">Dual Themes</span>
+                  <span className="service-tag">WCAG 2.1 AA</span>
+                  <span className="service-tag">Micro-Interactions</span>
                 </div>
               </div>
 
@@ -395,32 +431,32 @@ export default function App() {
                   <Workflow size={22} />
                 </div>
                 <div className="service-meta">04 / RELIABILITY</div>
-                <h3 className="service-title">Architecture Audits &amp; DevOps</h3>
+                <h3 className="service-title">Systems &amp; Platform Operations</h3>
                 <p className="service-text">
-                  Comprehensive code integrity analysis, anti-inspection security shielding, Vercel/AWS infrastructure hardening, and real-time performance telemetry.
+                  Comprehensive performance profiling, event access validation systems, cloud deployments, and resilient codebases maintained for long-term stability.
                 </p>
                 <div className="service-tags">
-                  <span className="service-tag">Security Shield</span>
-                  <span className="service-tag">Vercel &amp; AWS</span>
-                  <span className="service-tag">CI/CD Hardening</span>
-                  <span className="service-tag">60 FPS Tuning</span>
+                  <span className="service-tag">Vercel &amp; Cloud</span>
+                  <span className="service-tag">QR Verification</span>
+                  <span className="service-tag">API Integration</span>
+                  <span className="service-tag">Performance Tuning</span>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION: VERIFIED PRODUCTION SHOWCASE (#work) */}
+        {/* SECTION: SELECTED WORK / PORTFOLIO (#work) */}
         <section className="section projects-section" id="work">
           <div className="container">
             <div className="section-head-center">
-              <div className="badge-pill">Verified Showcase</div>
+              <div className="badge-pill">Selected Work</div>
               <h2 className="section-heading text-center">
-                Real Software.<br />
-                <span className="text-gradient-gold">Proven in Production.</span>
+                Engineering &amp; Digital Experiences<br />
+                <span className="text-gradient-gold">Built Collaboratively</span>
               </h2>
               <p className="section-description text-center">
-                Six verified platforms engineered, deployed, and maintained by the To Inspire collective.
+                Every platform below was designed, developed, and deployed through collaborative engineering by our team.
               </p>
 
               {/* Category Filter Tabs */}
@@ -440,11 +476,11 @@ export default function App() {
             {/* Projects Grid */}
             <div className="projects-grid">
               {filteredProjects.map((proj) => (
-                <div key={proj.id} className="project-card glass-panel">
+                <div key={proj.id} className={`project-card glass-panel ${proj.isUpcoming ? 'project-card-upcoming' : ''}`}>
                   <div className="project-card-top">
                     <div className="project-category-row">
                       <span className="project-category-badge">{proj.category}</span>
-                      <span className="project-author-tag">By {proj.author}</span>
+                      <span className="project-collab-tag">{proj.collaboration}</span>
                     </div>
 
                     <h3 className="project-title">{proj.title}</h3>
@@ -460,26 +496,58 @@ export default function App() {
                     </div>
 
                     <div className="project-actions">
-                      <a 
-                        href={proj.live} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="project-btn primary"
-                        title="View Live Web Application or Demo"
-                      >
-                        <span>Launch App</span>
-                        <ExternalLink size={14} />
-                      </a>
-                      <a 
-                        href={proj.github} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="project-btn secondary"
-                        title="Inspect Source Code Repository"
-                      >
-                        <Github size={14} />
-                        <span>Source</span>
-                      </a>
+                      {proj.isUpcoming ? (
+                        /* Upcoming project - non-broken, honest status badge */
+                        <div className="upcoming-status-badge">
+                          <span className="status-dot-pulse"></span>
+                          <span>In Active Development &bull; Coming Soon</span>
+                        </div>
+                      ) : proj.isDualDestination ? (
+                        /* TEJAS 2026 - Discoverable Student & Faculty Invitation Links */
+                        <div className="dual-destinations-group">
+                          {proj.destinations.map((dest) => (
+                            <a 
+                              key={dest.label}
+                              href={dest.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="project-btn primary"
+                              title={`Open ${dest.label} (${dest.audience})`}
+                            >
+                              <span>{dest.label}</span>
+                              <ExternalLink size={13} />
+                            </a>
+                          ))}
+                        </div>
+                      ) : (
+                        /* Standard Verified Project Links */
+                        <>
+                          {proj.live && (
+                            <a 
+                              href={proj.live} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="project-btn primary"
+                              title={`Visit ${proj.title} Live Application`}
+                            >
+                              <span>Launch App</span>
+                              <ExternalLink size={14} />
+                            </a>
+                          )}
+                          {proj.github && (
+                            <a 
+                              href={proj.github} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="project-btn secondary"
+                              title="Inspect Source Code Repository"
+                            >
+                              <Github size={14} />
+                              <span>Source</span>
+                            </a>
+                          )}
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -488,7 +556,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* SECTION: THE CREED & STUDIO PHILOSOPHY (#about) */}
+        {/* SECTION: CREED & PHILOSOPHY (#about) */}
         <section className="section about-section" id="about">
           <div className="container">
             <div className="about-grid">
@@ -500,7 +568,7 @@ export default function App() {
                 </h2>
                 
                 <p className="about-lead">
-                  True engineering is not about assembling generic templates or chasing fleeting design fads. It is the deliberate art of transforming clear ideas into resilient, beautiful software that endures.
+                  True engineering is the deliberate practice of translating clear ideas into reliable, well-structured software that solves real problems and endures over time.
                 </p>
 
                 <div className="philosophy-points">
@@ -509,8 +577,8 @@ export default function App() {
                       <Compass size={18} />
                     </div>
                     <div>
-                      <h4 className="point-title">Intellectual Honesty</h4>
-                      <p className="point-text">We build what creates real human and business value—never writing code for decoration or inflating claims.</p>
+                      <h4 className="point-title">Grounded Craftsmanship</h4>
+                      <p className="point-text">We build what creates real value—writing clean, maintainable software without inflating claims or assembling generic templates.</p>
                     </div>
                   </div>
 
@@ -519,8 +587,8 @@ export default function App() {
                       <Terminal size={18} />
                     </div>
                     <div>
-                      <h4 className="point-title">Architectural Precision</h4>
-                      <p className="point-text">Clean modular systems, strict WCAG AA contrast compliance, and silky 60fps WebGL execution across desktop and mobile.</p>
+                      <h4 className="point-title">Architectural Rigor</h4>
+                      <p className="point-text">Modular architectures, strict accessibility standards, and responsive performance tuned across desktop and mobile screens.</p>
                     </div>
                   </div>
 
@@ -529,14 +597,14 @@ export default function App() {
                       <ShieldCheck size={18} />
                     </div>
                     <div>
-                      <h4 className="point-title">Founder Accountability</h4>
-                      <p className="point-text">Every line of code and architectural design is personally overseen and delivered by our founding engineers.</p>
+                      <h4 className="point-title">Collaborative Accountability</h4>
+                      <p className="point-text">Every platform, application, and digital experience is built and supported directly through collaborative work by our team.</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* The Creed Shrine Card */}
+              {/* The Creed Showcase Card */}
               <div className="about-quote-card glass-panel">
                 <div className="quote-star-monogram">
                   <span className="star-glyph">✦</span>
@@ -548,32 +616,32 @@ export default function App() {
                   &ldquo;As the imagination, so the creation.&rdquo;
                 </div>
                 <p className="quote-explanation">
-                  This ancient maxim defines our studio creed. Whatever we conceive in the mind must be translated into material reality with uncompromising technical fidelity.
+                  This motto defines how we approach our work. Whatever we conceive in our planning is brought into reality with attention to detail and sound engineering.
                 </p>
                 <div className="quote-founder-signature">
-                  <span>To Inspire Founding Collective</span>
+                  <span>To Inspire Team</span>
                   <span className="signature-dot">&bull;</span>
-                  <span className="signature-date">Est. 2024</span>
+                  <span className="signature-date">Odisha, India</span>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION: DIRECT TECHNICAL LEADERSHIP (#team) */}
+        {/* SECTION: FOUNDING ENGINEERS (#team) */}
         <section className="section team-section" id="team">
           <div className="container">
             <div className="section-head-dual">
               <div>
                 <div className="badge-pill">Founders</div>
                 <h2 className="section-heading">
-                  The Engineers Behind<br />
+                  The Team Behind<br />
                   <span className="text-gradient-gold">To Inspire</span>
                 </h2>
               </div>
               <div className="team-controls-block">
                 <p className="section-lead-paragraph">
-                  Direct founder involvement on every client partnership. Meet the builders driving our technical strategy.
+                  Engineers collaborating on every design, architecture, and deployment.
                 </p>
                 <div className="carousel-controls">
                   <button 
@@ -644,33 +712,34 @@ export default function App() {
           </div>
         </section>
 
-        {/* SECTION: CTA INITIATE MONOLITH (#contact) */}
+        {/* SECTION: CONTACT (#contact) */}
         <section className="section cta-section" id="contact">
           <div className="container">
             <div className="cta-monolith glass-panel">
               <div className="cta-content-column">
-                <div className="badge-pill">Initiate Engagement</div>
+                <div className="badge-pill">Initiate Contact</div>
                 <h2 className="cta-headline">
-                  Ready to Build Something<br />
-                  <span className="text-gradient-gold">Truly Distinctive?</span>
+                  Let's Discuss<br />
+                  <span className="text-gradient-gold">Your Project</span>
                 </h2>
                 <p className="cta-text">
-                  Whether you are architecting a ground-up platform or elevating an existing product, let's explore how deliberate engineering can accelerate your vision.
+                  Whether you are planning a new software application, looking to build an interactive digital experience, or exploring technical collaboration, we would be glad to hear from you.
                 </p>
                 <div className="cta-actions-row">
                   <button 
                     className="btn btn-brand" 
-                    onClick={() => { setIsModalOpen(true); setModalType('project'); }}
+                    onClick={() => setIsModalOpen(true)}
                   >
-                    <span>Start a Project</span>
+                    <span>Send a Message</span>
                     <ArrowRight className="icon-arrow" size={16} />
                   </button>
-                  <button 
-                    className="btn btn-glass" 
-                    onClick={() => { setIsModalOpen(true); setModalType('consult'); }}
+                  <a 
+                    href="mailto:myselfazure@gmail.com" 
+                    className="btn btn-glass"
                   >
-                    <span>Direct Inquiry</span>
-                  </button>
+                    <Mail size={15} />
+                    <span>myselfazure@gmail.com</span>
+                  </a>
                 </div>
               </div>
               <div className="cta-sanskrit-flank" aria-hidden="true">
@@ -697,11 +766,11 @@ export default function App() {
                 </div>
               </a>
               <p className="footer-desc">
-                Autonomous creative engineering, expressive typography, and robust software architectures crafted in Bhubaneswar, India.
+                Creative engineering studio building web platforms, edge computer vision systems, and interactive digital experiences.
               </p>
               <div className="footer-origin-badge">
                 <span className="badge-dot"></span>
-                <span>As Conceived, So Created &bull; V4.0</span>
+                <span>Bhubaneswar, Odisha &bull; India</span>
               </div>
             </div>
 
@@ -711,51 +780,51 @@ export default function App() {
               <ul className="footer-links">
                 <li><a href="#home">Overview</a></li>
                 <li><a href="#services">Capabilities</a></li>
-                <li><a href="#work">Verified Engineering</a></li>
-                <li><a href="#about">Studio Creed</a></li>
+                <li><a href="#work">Selected Work</a></li>
+                <li><a href="#about">Creed &amp; Philosophy</a></li>
                 <li><a href="#team">Founding Team</a></li>
-                <li><a href="#contact">Initiate Engagement</a></li>
+                <li><a href="#contact">Contact</a></li>
               </ul>
             </div>
 
             {/* Verified Platforms */}
             <div className="footer-nav-col">
-              <h4 className="footer-col-title">Live Deliverables</h4>
+              <h4 className="footer-col-title">Selected Projects</h4>
               <ul className="footer-links">
                 <li><a href="https://github.com/sakashdora/PPE-PROJECT" target="_blank" rel="noopener noreferrer">ARGUS AI (Vision) ↗</a></li>
-                <li><a href="https://github.com/sakashdora/Trade_vault" target="_blank" rel="noopener noreferrer">TradeVault (FinTech) ↗</a></li>
+                <li><a href="https://riskrule.in/" target="_blank" rel="noopener noreferrer">RiskRule (FinTech) ↗</a></li>
+                <li><a href="https://freshers-party-beige.vercel.app/" target="_blank" rel="noopener noreferrer">TEJAS 2026 (Student) ↗</a></li>
+                <li><a href="https://teacherinvitation.vercel.app/" target="_blank" rel="noopener noreferrer">TEJAS 2026 (Faculty) ↗</a></li>
                 <li><a href="https://doseloop.vercel.app/" target="_blank" rel="noopener noreferrer">DoseLoop (Health) ↗</a></li>
-                <li><a href="https://harvest-tax-dashboard.vercel.app/" target="_blank" rel="noopener noreferrer">HarvestIQ (Tax) ↗</a></li>
                 <li><a href="https://cross-fire-three.vercel.app/" target="_blank" rel="noopener noreferrer">CrossFire 2026 ↗</a></li>
-                <li><a href="https://github.com/im-chandanmahapatra/pure-go" target="_blank" rel="noopener noreferrer">PURE GO (Commerce) ↗</a></li>
               </ul>
             </div>
 
-            {/* Founders & Connect */}
+            {/* Team & Contact */}
             <div className="footer-nav-col">
-              <h4 className="footer-col-title">Founders &amp; Connect</h4>
+              <h4 className="footer-col-title">Connect</h4>
               <ul className="footer-links">
                 <li><a href="https://www.linkedin.com/in/chandan-mahapatra/" target="_blank" rel="noopener noreferrer">Chandan Mahapatra (LinkedIn) ↗</a></li>
                 <li><a href="https://github.com/im-chandanmahapatra" target="_blank" rel="noopener noreferrer">Chandan (GitHub) ↗</a></li>
                 <li><a href="https://www.linkedin.com/in/sakashdora" target="_blank" rel="noopener noreferrer">S Akash Dora (LinkedIn) ↗</a></li>
                 <li><a href="https://github.com/sakashdora" target="_blank" rel="noopener noreferrer">S Akash Dora (GitHub) ↗</a></li>
-                <li><a href="mailto:myselfazure@gmail.com">Direct Inquiry (Email) ↗</a></li>
+                <li><a href="mailto:myselfazure@gmail.com">Direct Email ↗</a></li>
               </ul>
             </div>
           </div>
 
           <div className="footer-bottom-bar">
-            <p>&copy; {new Date().getFullYear()} To Inspire. All rights reserved. Built with deliberate craft.</p>
+            <p>&copy; {new Date().getFullYear()} To Inspire. All rights reserved.</p>
             <div className="footer-legal-links">
               <span>यथा कल्पना तथा रचना</span>
               <span className="dot-sep">&bull;</span>
-              <span>TrueInspires V4.0</span>
+              <span>Odisha, India</span>
             </div>
           </div>
         </div>
       </footer>
 
-      {/* ENGAGEMENT & CONSULTATION MODAL */}
+      {/* CLEAN, AUTHENTIC CONTACT MODAL */}
       {isModalOpen && (
         <div className="modal-backdrop" onClick={() => setIsModalOpen(false)}>
           <div 
@@ -763,15 +832,12 @@ export default function App() {
             onClick={(e) => e.stopPropagation()} 
             role="dialog" 
             aria-modal="true"
+            aria-labelledby="contact-modal-title"
           >
             <div className="modal-header">
               <div>
-                <span className="modal-eyebrow">
-                  {modalType === 'project' ? 'Initiate Project Proposal' : 'Direct Founder Consultation'}
-                </span>
-                <h3 className="modal-title">
-                  {modalType === 'project' ? 'Let’s Build Something Distinctive' : 'Direct Access to Founding Engineers'}
-                </h3>
+                <span className="modal-eyebrow">Direct Contact</span>
+                <h3 className="modal-title" id="contact-modal-title">Get in Touch with To Inspire</h3>
               </div>
               <button 
                 className="modal-close-btn" 
@@ -783,24 +849,6 @@ export default function App() {
             </div>
 
             <form onSubmit={handleFormSubmit} className="modal-form">
-              {modalType === 'project' && (
-                <div className="form-group">
-                  <label className="form-label">Project Domain</label>
-                  <div className="project-type-pills">
-                    {['Edge AI & Vision', 'FinTech & Analytics', 'Digital Health', 'Cloud Platforms', 'Event Operations'].map((type) => (
-                      <button
-                        type="button"
-                        key={type}
-                        className={`type-pill ${selectedProjectType === type ? 'active' : ''}`}
-                        onClick={() => setSelectedProjectType(type)}
-                      >
-                        {type}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
               <div className="form-grid-2">
                 <div className="form-group">
                   <label className="form-label" htmlFor="clientName">Your Name</label>
@@ -818,46 +866,64 @@ export default function App() {
                     type="email" 
                     id="clientEmail" 
                     className="form-input" 
-                    placeholder="alex@company.com" 
+                    placeholder="alex@example.com" 
                     required 
                   />
                 </div>
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="clientMsg">Project Details &amp; Objectives</label>
+                <label className="form-label" htmlFor="projectType">Area of Interest</label>
+                <input 
+                  type="text" 
+                  id="projectType" 
+                  className="form-input" 
+                  placeholder="e.g. Full-Stack Web App, Edge AI, Digital Experience..." 
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="clientMsg">Message or Project Outline</label>
                 <textarea 
                   id="clientMsg" 
                   rows={4} 
                   className="form-input textarea" 
-                  placeholder="Outline your product vision, technical scope, or architecture timeline..." 
+                  placeholder="Share details about what you would like to build or discuss..." 
                   required
                 ></textarea>
               </div>
 
               <div className="modal-actions">
-                <button type="button" className="btn btn-glass" onClick={() => setIsModalOpen(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-brand">
-                  <span>Send Direct Proposal</span>
-                  <Send size={15} />
-                </button>
+                <a 
+                  href="mailto:myselfazure@gmail.com" 
+                  className="modal-email-alt"
+                >
+                  Or email directly: myselfazure@gmail.com
+                </a>
+                <div className="modal-buttons">
+                  <button type="button" className="btn btn-glass" onClick={() => setIsModalOpen(false)}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-brand">
+                    <span>Send Message</span>
+                    <Send size={15} />
+                  </button>
+                </div>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      {/* SUCCESS TOAST NOTIFICATION */}
+      {/* TOAST NOTIFICATION */}
       {showToast && (
         <div className="toast-notification glass-panel">
           <div className="toast-icon-circle">
             <CheckCircle2 size={18} />
           </div>
           <div>
-            <div className="toast-title">Transmission Received</div>
-            <div className="toast-desc">Thank you. Chandan or Akash will respond directly within 24 hours.</div>
+            <div className="toast-title">Message Sent</div>
+            <div className="toast-desc">Thank you. The To Inspire team will get back to you shortly.</div>
           </div>
         </div>
       )}

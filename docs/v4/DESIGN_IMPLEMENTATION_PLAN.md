@@ -53,14 +53,14 @@ flowchart TD
 Upon receiving client approval to proceed, implementation will execute across five structured phases:
 
 ### Phase 1: Data Model Expansion & True Project Integration
-- Update `src/data/projects.js` to incorporate all six verified platforms:
+- Update `src/data/projects.js` to incorporate collaborative platforms:
   1. `ARGUS AI` (Edge AI & Computer Vision)
-  2. `TradeVault / RiskRule` (FinTech & Market Intelligence)
-  3. `DoseLoop` (Digital Health & Adherence)
-  4. `HarvestIQ` (Crypto Tax Loss Harvesting)
-  5. `CrossFire 2026` (Campus Event Operations)
-  6. `PURE GO` (Luxury D2C Commerce)
-- Update author attributions and add direct GitHub/demo links.
+  2. `RiskRule` (FinTech & Quantitative Risk Management, https://riskrule.in/)
+  3. `TEJAS 2026 — The Fresh Bloom` (Dual Digital Invitation Platform: Student & Faculty)
+  4. `DoseLoop` (Digital Health & Adherence State Machine)
+  5. `CrossFire 2026` (Campus Event Operations & QR Verification)
+  6. `Social Media Project` (In Active Development · Coming Soon)
+- Present portfolio collaboratively ("Built by the To Inspire team").
 
 ### Phase 2: Dual-Theme Semantic Token Layer in `src/index.css`
 - Implement the complete CSS custom property dictionary under `[data-theme="dark"]` and `[data-theme="light"]`.
