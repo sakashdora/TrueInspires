@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import ThreeCanvas from './components/ThreeCanvas';
 import { projects, projectCategories } from './data/projects';
 import { teamMembers } from './data/team';
 import { 
@@ -10,26 +11,20 @@ import {
   Mail, 
   Sparkles, 
   Send, 
-  BarChart2, 
-  Lightbulb, 
-  Users, 
-  Zap, 
-  CheckCircle, 
+  Layers, 
   Code2, 
   Rocket, 
-  FileText, 
   X, 
-  Layers, 
-  HeartHandshake, 
   ShieldCheck, 
-  ChevronDown,
-  Monitor,
-  Cpu,
-  Palette,
-  MessageSquare,
-  Clock,
-  Activity,
-  Check
+  Monitor, 
+  Cpu, 
+  Palette, 
+  MessageSquare, 
+  CheckCircle2, 
+  Terminal, 
+  Compass, 
+  ChevronRight,
+  Workflow
 } from 'lucide-react';
 
 export default function App() {
@@ -40,42 +35,26 @@ export default function App() {
 
   // Modal & Toast States
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState('contact');
-  const [selectedProjectType, setSelectedProjectType] = useState('Web & App');
+  const [modalType, setModalType] = useState('project');
+  const [selectedProjectType, setSelectedProjectType] = useState('Web & App Development');
   const [showToast, setShowToast] = useState(false);
 
   // Projects Filter State
   const [selectedCategory, setSelectedCategory] = useState('All Projects');
 
-  // Team Carousel Highlight State
+  // Team Active Index
   const [activeTeamIndex, setActiveTeamIndex] = useState(0);
 
-  // Dashboard Mockup State
-  const [activeTab, setActiveTab] = useState('Dashboard');
-  const [period, setPeriod] = useState('This Month');
-  const [periodMenuOpen, setPeriodMenuOpen] = useState(false);
-  const [progressVal, setProgressVal] = useState(76);
+  // Refs for animations
+  const heroContentRef = useRef(null);
 
-  // Refs for Animations
-  const heroStageRef = useRef(null);
-  const mockupRef = useRef(null);
-  const chartLineRef = useRef(null);
-
-  // Period Data Presets
-  const periodData = {
-    'This Week': { pct: 89, tasks: '12/14', time: '4 Days' },
-    'This Month': { pct: 76, tasks: '24/32', time: '2 Weeks' },
-    'This Quarter': { pct: 92, tasks: '68/74', time: '6 Weeks' },
-    'All Time': { pct: 98, tasks: '184/188', time: 'Completed' }
-  };
-
-  // Scroll detection for sticky navbar & active section
+  // Scroll detection for sticky navbar & active section indicator
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 30);
 
       const sections = ['home', 'services', 'work', 'about', 'team', 'contact'];
-      const scrollPos = window.scrollY + 180;
+      const scrollPos = window.scrollY + 220;
 
       for (const id of sections) {
         const el = document.getElementById(id);
@@ -90,98 +69,35 @@ export default function App() {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // GSAP Entry & Continuous Physics Animations
+  // GSAP Entrance Animations
   useEffect(() => {
-    // 1. Hero floating items continuous hover physics
-    const floatAnims = [
-      gsap.to('#planeBadge', { y: '-=10', rotation: 4, duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut' }),
-      gsap.to('#cardIdeas', { y: '-=8', duration: 3.4, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.2 }),
-      gsap.to('#cardClients', { y: '+=8', duration: 3.8, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.5 }),
-      gsap.to('#chartBadge', { y: '-=10', rotation: -3, duration: 3.2, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.3 }),
-      gsap.to('#cardSolutions', { y: '-=8', duration: 3.6, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.6 }),
-      gsap.to('#cardProjects', { y: '+=8', duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.2 })
-    ];
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.hero-anim-item', 
+        { y: 32, opacity: 0 },
+        { 
+          y: 0, 
+          opacity: 1, 
+          duration: 1.1, 
+          stagger: 0.15, 
+          ease: 'power3.out',
+          delay: 0.2
+        }
+      );
+    }, heroContentRef);
 
-    // 2. Animated Chart Drawing
-    if (chartLineRef.current) {
-      try {
-        const len = chartLineRef.current.getTotalLength ? chartLineRef.current.getTotalLength() : 500;
-        gsap.set(chartLineRef.current, { strokeDasharray: len, strokeDashoffset: len });
-        gsap.to(chartLineRef.current, {
-          strokeDashoffset: 0,
-          duration: 1.6,
-          ease: 'power2.out',
-          delay: 0.4
-        });
-      } catch (e) {
-        console.warn(e);
-      }
-    }
-
-    // 3. Parallax tilt on mouse movement in Hero
-    const handleMouseMove = (e) => {
-      if (window.innerWidth <= 800) return;
-      const { clientX, clientY } = e;
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      const deltaX = (clientX - centerX) / centerX;
-      const deltaY = (clientY - centerY) / centerY;
-
-      gsap.to('#cardIdeas', { x: deltaX * 14, y: deltaY * 14, duration: 0.8, ease: 'power1.out', overwrite: 'auto' });
-      gsap.to('#cardClients', { x: deltaX * 10, y: deltaY * 10, duration: 0.8, ease: 'power1.out', overwrite: 'auto' });
-      gsap.to('#cardSolutions', { x: -deltaX * 14, y: -deltaY * 14, duration: 0.8, ease: 'power1.out', overwrite: 'auto' });
-      gsap.to('#cardProjects', { x: -deltaX * 10, y: -deltaY * 10, duration: 0.8, ease: 'power1.out', overwrite: 'auto' });
-      
-      if (mockupRef.current) {
-        gsap.to(mockupRef.current, {
-          rotateY: deltaX * 2.5,
-          rotateX: -deltaY * 2.5,
-          transformPerspective: 1000,
-          duration: 0.9,
-          ease: 'power1.out'
-        });
-      }
-    };
-
-    const heroStage = heroStageRef.current;
-    if (heroStage) {
-      heroStage.addEventListener('mousemove', handleMouseMove);
-    }
-
-    return () => {
-      floatAnims.forEach(a => a.kill());
-      if (heroStage) {
-        heroStage.removeEventListener('mousemove', handleMouseMove);
-      }
-    };
+    return () => ctx.revert();
   }, []);
 
-  // Update Period Dropdown Handler
-  const handlePeriodChange = (val) => {
-    setPeriod(val);
-    setPeriodMenuOpen(false);
-    if (periodData[val]) {
-      const target = periodData[val].pct;
-      const counter = { val: progressVal };
-      gsap.to(counter, {
-        val: target,
-        duration: 0.8,
-        ease: 'power2.out',
-        onUpdate: () => setProgressVal(Math.round(counter.val))
-      });
-    }
-  };
-
-  // Team Carousel Arrows Handler
+  // Team carousel navigation
   const handleTeamNav = (dir) => {
-    setActiveTeamIndex(prev => (dir === 'next' ? (prev === 0 ? 1 : 0) : (prev === 1 ? 0 : 1)));
+    setActiveTeamIndex((prev) => (dir === 'next' ? (prev === 0 ? 1 : 0) : (prev === 1 ? 0 : 1)));
   };
 
-  // Form Submit Handler
+  // Contact form submission
   const handleFormSubmit = (e) => {
     e.preventDefault();
     setIsModalOpen(false);
@@ -189,48 +105,98 @@ export default function App() {
     setTimeout(() => setShowToast(false), 4500);
   };
 
-  // Filtered Projects
+  // Filter projects by category
   const filteredProjects = selectedCategory === 'All Projects'
     ? projects
-    : projects.filter(p => p.category === selectedCategory);
+    : projects.filter((p) => p.category === selectedCategory);
 
   return (
     <div className="app-root">
-      {/* Ambient Mesh Glow Blobs */}
-      <div className="bg-blobs" aria-hidden="true">
-        <div className="blob blob-1"></div>
-        <div className="blob blob-2"></div>
-        <div className="blob blob-3"></div>
+      {/* Interactive 3D WebGL Canvas Layer */}
+      <ThreeCanvas />
+
+      {/* Atmospheric Background Mesh Glows */}
+      <div className="ambient-mesh-layer" aria-hidden="true">
+        <div className="glow-sphere glow-1"></div>
+        <div className="glow-sphere glow-2"></div>
+        <div className="glow-sphere glow-3"></div>
       </div>
 
-      {/* STICKY NAVBAR */}
+      {/* STICKY HEADER & NAVBAR */}
       <header className={`navbar-wrapper ${isScrolled ? 'scrolled' : ''}`} id="navbar">
         <div className="nav-container">
-          <a href="#home" className="brand-logo" aria-label="TrueInspires Home">
-            <svg className="logo-mark" viewBox="0 0 32 32" fill="none">
-              <rect x="3" y="4" width="7" height="24" rx="3.5" fill="#0A192F" />
-              <rect x="12.5" y="8" width="7" height="20" rx="3.5" fill="#1E6BFF" />
-              <rect x="22" y="14" width="7" height="14" rx="3.5" fill="#38BDF8" />
-            </svg>
-            <span className="logo-text">TrueInspires</span>
+          {/* Authentic Brand Lockup with Real Logo Asset */}
+          <a href="#home" className="brand-logo" aria-label="To Inspire Home">
+            <div className="brand-logo-frame">
+              <img 
+                src="/assets/true_inspire.jpeg" 
+                alt="To Inspire Logo" 
+                className="brand-logo-img" 
+              />
+            </div>
+            <div className="brand-text-block">
+              <span className="brand-name">TO INSPIRE</span>
+              <span className="brand-sanskrit">यथा कल्पना तथा रचना</span>
+            </div>
           </a>
 
+          {/* Desktop Navigation Links */}
           <nav className={`nav-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
-            <a href="#home" className={`nav-link ${activeNav === 'home' ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>Home</a>
-            <a href="#about" className={`nav-link ${activeNav === 'about' ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>About</a>
-            <a href="#services" className={`nav-link ${activeNav === 'services' ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>Services</a>
-            <a href="#work" className={`nav-link ${activeNav === 'work' ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>Our Work</a>
-            <a href="#team" className={`nav-link ${activeNav === 'team' ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>Team</a>
-            <a href="#contact" className={`nav-link ${activeNav === 'contact' ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>Contact</a>
+            <a 
+              href="#home" 
+              className={`nav-link ${activeNav === 'home' ? 'active' : ''}`} 
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Overview
+            </a>
+            <a 
+              href="#services" 
+              className={`nav-link ${activeNav === 'services' ? 'active' : ''}`} 
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Services
+            </a>
+            <a 
+              href="#work" 
+              className={`nav-link ${activeNav === 'work' ? 'active' : ''}`} 
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Engineering
+            </a>
+            <a 
+              href="#about" 
+              className={`nav-link ${activeNav === 'about' ? 'active' : ''}`} 
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Philosophy
+            </a>
+            <a 
+              href="#team" 
+              className={`nav-link ${activeNav === 'team' ? 'active' : ''}`} 
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Founders
+            </a>
+            <a 
+              href="#contact" 
+              className={`nav-link ${activeNav === 'contact' ? 'active' : ''}`} 
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Initiate
+            </a>
           </nav>
 
+          {/* Nav Actions */}
           <div className="nav-actions">
-            <button className="btn btn-blue nav-cta" onClick={() => { setIsModalOpen(true); setModalType('project'); }}>
-              <span>Let's Build</span>
-              <ArrowRight className="icon-arrow" size={16} />
+            <button 
+              className="btn btn-gold nav-cta" 
+              onClick={() => { setIsModalOpen(true); setModalType('project'); }}
+            >
+              <span>Build Together</span>
+              <ArrowRight className="icon-arrow" size={15} />
             </button>
             <button 
-              className="mobile-menu-toggle" 
+              className={`mobile-menu-toggle ${mobileMenuOpen ? 'active' : ''}`} 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle Navigation"
             >
@@ -242,427 +208,231 @@ export default function App() {
         </div>
       </header>
 
-      <main>
+      <main className="main-content">
         {/* HERO SECTION */}
-        <section className="hero-section" id="home">
-          {/* Subtle curved connecting paths */}
-          <svg className="hero-connecting-lines" viewBox="0 0 1440 600" fill="none" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M 240 180 C 350 200, 420 260, 470 290" stroke="rgba(30, 107, 255, 0.22)" strokeWidth="2" strokeDasharray="6 6" />
-            <path d="M 230 330 C 330 330, 390 320, 470 320" stroke="rgba(30, 107, 255, 0.2)" strokeWidth="2" />
-            <path d="M 1200 180 C 1090 200, 1020 260, 970 290" stroke="rgba(30, 107, 255, 0.22)" strokeWidth="2" strokeDasharray="6 6" />
-            <path d="M 1210 330 C 1110 330, 1050 320, 970 320" stroke="rgba(30, 107, 255, 0.2)" strokeWidth="2" />
-          </svg>
-
-          <div className="hero-container" ref={heroStageRef}>
-            {/* Top Pill Tag */}
-            <div className="badge-pill hero-badge">
-              <Sparkles className="sparkle-icon" size={14} />
-              <span>Innovate &bull; Build &bull; Inspire</span>
+        <section className="hero-section" id="home" ref={heroContentRef}>
+          <div className="hero-container">
+            {/* Top Eyebrow Badge Pill */}
+            <div className="hero-anim-item badge-pill hero-badge">
+              <Sparkles className="sparkle-icon" size={13} />
+              <span className="badge-text-gold">Creative Engineering Studio</span>
+              <span className="badge-divider">&bull;</span>
+              <span className="badge-sanskrit-accent">यथा कल्पना तथा रचना</span>
             </div>
 
-            {/* Main Headline */}
-            <h1 className="hero-title">
-              We Build Digital Products<br />
-              <span className="text-gradient-blue">That Inspire Growth</span>
+            {/* Main Editorial Headline */}
+            <h1 className="hero-anim-item hero-title">
+              Where Bold Imagination<br />
+              <span className="text-gradient-gold">Meets Precision Engineering</span>
             </h1>
 
-            {/* Subtitle */}
-            <p className="hero-subtitle">
-              At TrueInspires, we design, develop and deliver innovative digital solutions that solve real problems and create meaningful impact.
+            {/* Editorial Subtitle */}
+            <p className="hero-anim-item hero-subtitle">
+              At <strong>To Inspire</strong>, we design, develop, and deliver bespoke digital platforms, scalable software architectures, and immersive interactive web experiences that solve genuine problems.
             </p>
 
-            {/* Dual CTAs */}
-            <div className="hero-cta-group">
-              <button className="btn btn-dark" onClick={() => { setIsModalOpen(true); setModalType('project'); }}>
-                <span>Start a Project</span>
-                <ArrowRight className="icon-arrow" size={16} />
-              </button>
-              <button className="btn btn-outline" onClick={() => { setIsModalOpen(true); setModalType('talk'); }}>
-                <span>Talk to Us</span>
-                <span className="btn-icon-circle">
-                  <svg viewBox="0 0 24 24" fill="#1E6BFF">
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                  </svg>
-                </span>
-              </button>
-            </div>
-
-            {/* STAGE: Floating Elements & macOS Dashboard Mockup */}
-            <div className="hero-stage">
-              {/* Floating Badge 1: Paper plane */}
-              <div className="float-item float-badge-plane" id="planeBadge">
-                <div className="circular-icon-badge">
-                  <Send size={18} />
-                </div>
-              </div>
-
-              {/* Floating Card 1: Ideas to Impact */}
-              <div className="float-item float-card-ideas glass-card" id="cardIdeas">
-                <div className="card-icon-box bg-blue-subtle">
-                  <Lightbulb size={18} color="#1E6BFF" />
-                </div>
-                <div className="card-text">
-                  <span className="card-title">Ideas to Impact</span>
-                  <span className="card-subtitle">Faster Together</span>
-                </div>
-              </div>
-
-              {/* Floating Card 2: 20+ Happy Clients */}
-              <div className="float-item float-card-clients glass-card" id="cardClients">
-                <div className="card-icon-box bg-blue-subtle">
-                  <Users size={18} color="#1E6BFF" />
-                </div>
-                <div className="card-text">
-                  <span className="card-title">20+</span>
-                  <span className="card-subtitle">Happy Clients</span>
-                </div>
-                <div className="avatar-stack">
-                  <img src="/assets/avatar1.jpg" alt="Client 1" className="avatar-sm" />
-                  <img src="/assets/avatar2.jpg" alt="Client 2" className="avatar-sm" />
-                  <img src="/assets/avatar3.jpg" alt="Client 3" className="avatar-sm" />
-                  <span className="avatar-sm avatar-add">+</span>
-                </div>
-              </div>
-
-              {/* Floating Badge 2: Bar Chart */}
-              <div className="float-item float-badge-chart" id="chartBadge">
-                <div className="circular-icon-badge">
-                  <BarChart2 size={18} />
-                </div>
-              </div>
-
-              {/* Floating Card 3: Real Solutions */}
-              <div className="float-item float-card-solutions glass-card" id="cardSolutions">
-                <div className="card-icon-box bg-blue-subtle">
-                  <BarChart2 size={18} color="#1E6BFF" />
-                </div>
-                <div className="card-text">
-                  <span className="card-title">Real Solutions</span>
-                  <span className="card-subtitle">For Real People</span>
-                </div>
-              </div>
-
-              {/* Floating Card 4: 50+ Projects Delivered */}
-              <div className="float-item float-card-projects glass-card" id="cardProjects">
-                <div className="card-icon-box bg-blue-subtle">
-                  <Zap size={18} color="#1E6BFF" />
-                </div>
-                <div className="card-text">
-                  <span className="card-title">50+</span>
-                  <span className="card-subtitle">Projects Delivered</span>
-                </div>
-                <div className="card-sparkline">
-                  <svg viewBox="0 0 100 24" fill="none" stroke="#1E6BFF" strokeWidth="2">
-                    <path d="M0 18 Q 20 22, 35 12 T 70 8 T 100 4" strokeLinecap="round" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Central App Dashboard Mockup */}
-              <div className="dashboard-mockup" ref={mockupRef} id="dashboardMockup">
-                <div className="mockup-header">
-                  <div className="window-controls">
-                    <span className="dot dot-red"></span>
-                    <span className="dot dot-yellow"></span>
-                    <span className="dot dot-green"></span>
-                  </div>
-                  <div className="mockup-search-dots">
-                    <span className="mini-dot"></span>
-                    <span className="mini-dot"></span>
-                    <span className="mini-dot"></span>
-                  </div>
-                </div>
-
-                <div className="mockup-body">
-                  {/* Left Sidebar */}
-                  <aside className="mockup-sidebar">
-                    <ul className="sidebar-menu">
-                      {['Dashboard', 'Projects', 'Team', 'Messages', 'Analytics', 'Settings'].map(tab => (
-                        <li 
-                          key={tab} 
-                          className={`menu-item ${activeTab === tab ? 'active' : ''}`}
-                          onClick={() => setActiveTab(tab)}
-                        >
-                          {tab === 'Dashboard' && <Layers size={15} />}
-                          {tab === 'Projects' && <FileText size={15} />}
-                          {tab === 'Team' && <Users size={15} />}
-                          {tab === 'Messages' && <MessageSquare size={15} />}
-                          {tab === 'Analytics' && <BarChart2 size={15} />}
-                          {tab === 'Settings' && <Activity size={15} />}
-                          <span>{tab}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="sidebar-footer">
-                      <img src="/assets/alex.jpg" alt="Alex Carter" className="user-avatar" />
-                      <div className="user-info">
-                        <span className="user-name">Alex Carter</span>
-                        <span className="user-role">Product Owner</span>
-                      </div>
-                    </div>
-                  </aside>
-
-                  {/* Main Content Area */}
-                  <section className="mockup-content">
-                    <div className="panel-header">
-                      <h3 className="panel-title">{activeTab} Progress</h3>
-                      <div className="dropdown-wrapper">
-                        <button className="dropdown-btn" onClick={() => setPeriodMenuOpen(!periodMenuOpen)}>
-                          <span>{period}</span>
-                          <ChevronDown size={13} />
-                        </button>
-                        {periodMenuOpen && (
-                          <ul className="dropdown-menu show">
-                            {['This Week', 'This Month', 'This Quarter', 'All Time'].map(p => (
-                              <li key={p} className={period === p ? 'active' : ''} onClick={() => handlePeriodChange(p)}>
-                                {p}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Area Graph */}
-                    <div className="chart-container">
-                      <div className="chart-y-axis">
-                        <span>100</span>
-                        <span>75</span>
-                        <span>50</span>
-                        <span>25</span>
-                        <span>0</span>
-                      </div>
-                      <div className="chart-plot">
-                        <svg viewBox="0 0 500 130" className="progress-svg" preserveAspectRatio="none">
-                          <defs>
-                            <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                              <stop offset="0%" stopColor="#1E6BFF" stopOpacity="0.32" />
-                              <stop offset="60%" stopColor="#38BDF8" stopOpacity="0.12" />
-                              <stop offset="100%" stopColor="#38BDF8" stopOpacity="0.01" />
-                            </linearGradient>
-                          </defs>
-                          <line x1="0" y1="10" x2="500" y2="10" stroke="#F1F5F9" strokeWidth="1" />
-                          <line x1="0" y1="40" x2="500" y2="40" stroke="#F1F5F9" strokeWidth="1" />
-                          <line x1="0" y1="70" x2="500" y2="70" stroke="#F1F5F9" strokeWidth="1" />
-                          <line x1="0" y1="100" x2="500" y2="100" stroke="#F1F5F9" strokeWidth="1" />
-                          
-                          <path d="M 0 115 Q 120 120, 200 95 T 320 38 T 420 48 T 500 60 L 500 130 L 0 130 Z" fill="url(#chartGradient)" />
-                          <path ref={chartLineRef} d="M 0 115 Q 120 120, 200 95 T 320 38 T 420 48 T 500 60" fill="none" stroke="#1E6BFF" strokeWidth="3" strokeLinecap="round" />
-                          
-                          <g className="chart-marker" transform="translate(320, 38)">
-                            <circle r="6" fill="#1E6BFF" />
-                            <circle r="12" fill="#1E6BFF" opacity="0.25" className="anim-pulse" />
-                          </g>
-                        </svg>
-
-                        <div className="chart-badge" style={{ left: '64%', top: '12px' }}>
-                          <span>{progressVal}%</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Metric Chips */}
-                    <div className="metrics-grid">
-                      <div className="metric-chip">
-                        <div className="metric-icon-box bg-emerald">
-                          <CheckCircle size={14} />
-                        </div>
-                        <div className="metric-data">
-                          <span className="metric-label">Tasks</span>
-                          <strong className="metric-val">{periodData[period]?.tasks || '24/32'}</strong>
-                        </div>
-                      </div>
-
-                      <div className="metric-chip">
-                        <div className="metric-icon-box bg-blue">
-                          <Users size={14} />
-                        </div>
-                        <div className="metric-data">
-                          <span className="metric-label">Team</span>
-                          <strong className="metric-val">5 Members</strong>
-                        </div>
-                      </div>
-
-                      <div className="metric-chip">
-                        <div className="metric-icon-box bg-cyan">
-                          <Activity size={14} />
-                        </div>
-                        <div className="metric-data">
-                          <span className="metric-label">Status</span>
-                          <strong className="metric-val">On Track</strong>
-                        </div>
-                      </div>
-
-                      <div className="metric-chip">
-                        <div className="metric-icon-box bg-purple">
-                          <Clock size={14} />
-                        </div>
-                        <div className="metric-data">
-                          <span className="metric-label">Timeline</span>
-                          <strong className="metric-val">{periodData[period]?.time || '2 Weeks'}</strong>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Stepper Roadmap */}
-                    <div className="stepper-section">
-                      <h4 className="stepper-title">From Idea to Impact</h4>
-                      <div className="stepper-track">
-                        <div className="step-node completed">
-                          <span className="step-check">&#10003;</span>
-                          <span className="step-name">Ideation</span>
-                        </div>
-                        <div className="step-line active"></div>
-                        <div className="step-node completed">
-                          <span className="step-check">&#10003;</span>
-                          <span className="step-name">Development</span>
-                        </div>
-                        <div className="step-line active"></div>
-                        <div className="step-node active-step">
-                          <span className="step-dot"></span>
-                          <span className="step-name">Deployment</span>
-                        </div>
-                        <div className="step-line"></div>
-                        <div className="step-node pending">
-                          <span className="step-ring"></span>
-                          <span className="step-name">Growth</span>
-                        </div>
-                      </div>
-                    </div>
-                  </section>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION: WHAT WE DO */}
-        <section className="section services-section" id="services">
-          <div className="container services-grid-layout">
-            <div className="section-header-left">
-              <div className="badge-pill">What We Do</div>
-              <h2 className="section-heading">
-                Complete Solutions<br />for a Digital Tomorrow
-              </h2>
-              <p className="section-description">
-                From idea validation to full-scale development, we help you build, launch and grow with smart and scalable solutions.
-              </p>
-              <a href="#work" className="btn btn-blue inline-flex">
-                <span>Explore Services</span>
+            {/* Action Group */}
+            <div className="hero-anim-item hero-cta-group">
+              <a href="#work" className="btn btn-gold">
+                <span>Explore Engineering</span>
                 <ArrowRight className="icon-arrow" size={16} />
               </a>
+              <button 
+                className="btn btn-glass" 
+                onClick={() => { setIsModalOpen(true); setModalType('project'); }}
+              >
+                <span>Initiate Consultation</span>
+                <span className="btn-beacon-dot"></span>
+              </button>
             </div>
 
-            <div className="services-cards-grid">
-              <div className="service-card">
-                <div className="service-icon-box bg-blue-light">
-                  <Monitor size={22} color="#1E6BFF" />
-                </div>
-                <h3 className="service-title">Web & App Development</h3>
-                <p className="service-text">
-                  Modern, scalable and high-performance applications tailored to your needs.
-                </p>
+            {/* Live Engineering Telemetry Strip */}
+            <div className="hero-anim-item hero-telemetry-strip">
+              <div className="telemetry-item">
+                <span className="telemetry-label">Architecture</span>
+                <strong className="telemetry-value">WebGL &bull; React &bull; Vite</strong>
               </div>
-
-              <div className="service-card">
-                <div className="service-icon-box bg-purple-light">
-                  <Cpu size={22} color="#8B5CF6" />
-                </div>
-                <h3 className="service-title">AI & Automation</h3>
-                <p className="service-text">
-                  Smart automation and AI solutions to improve efficiency and decision making.
-                </p>
+              <div className="telemetry-divider"></div>
+              <div className="telemetry-item">
+                <span className="telemetry-label">Studio Origin</span>
+                <strong className="telemetry-value">Bhubaneswar, Odisha</strong>
               </div>
-
-              <div className="service-card">
-                <div className="service-icon-box bg-pink-light">
-                  <Palette size={22} color="#EC4899" />
-                </div>
-                <h3 className="service-title">UI/UX Design</h3>
-                <p className="service-text">
-                  Clean, modern and user-centric designs that create great experiences.
-                </p>
+              <div className="telemetry-divider"></div>
+              <div className="telemetry-item">
+                <span className="telemetry-label">Status</span>
+                <strong className="telemetry-value text-emerald">
+                  <span className="live-indicator-pulse"></span>
+                  Accepting Q4 / Q1 Projects
+                </strong>
               </div>
-
-              <div className="service-card">
-                <div className="service-icon-box bg-green-light">
-                  <MessageSquare size={22} color="#10B981" />
-                </div>
-                <h3 className="service-title">Consulting & Support</h3>
-                <p className="service-text">
-                  End-to-end guidance, deployment and continuous support for long-term success.
-                </p>
+              <div className="telemetry-divider"></div>
+              <div className="telemetry-item">
+                <span className="telemetry-label">Verified Deliverables</span>
+                <strong className="telemetry-value">5 Production Platforms</strong>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION: FEATURED PROJECTS & CASE STUDIES (Our Work) */}
-        <section className="section projects-section" id="work">
-          <div className="container text-center-wrap">
-            <div className="badge-pill">Our Work</div>
-            <h2 className="section-heading text-center">Crafted with Precision. Delivered with Impact.</h2>
-            <p className="section-description text-center">
-              Explore real-world software, web applications and digital platforms engineered by our team.
-            </p>
+        {/* SECTION: SERVICES / WHAT WE DO */}
+        <section className="section services-section" id="services">
+          <div className="container">
+            <div className="section-head-dual">
+              <div>
+                <div className="badge-pill">Capabilities</div>
+                <h2 className="section-heading">
+                  Engineered for Impact.<br />
+                  <span className="text-gradient-gold">Constructed for Longevity.</span>
+                </h2>
+              </div>
+              <p className="section-lead-paragraph">
+                From zero-to-one product development to advanced 3D interactive web applications, we combine architectural discipline with deliberate art direction.
+              </p>
+            </div>
 
-            {/* Category Filter Bar */}
-            <div className="projects-filter-bar">
-              {projectCategories.map(cat => (
-                <button 
-                  key={cat}
-                  className={`filter-btn ${selectedCategory === cat ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(cat)}
-                >
-                  {cat}
-                </button>
-              ))}
+            <div className="services-grid">
+              {/* Service Card 1 */}
+              <div className="service-card glass-panel">
+                <div className="service-icon-box">
+                  <Monitor size={22} className="service-icon" />
+                </div>
+                <div className="service-meta">01 / ARCHITECTURE</div>
+                <h3 className="service-title">Web & App Engineering</h3>
+                <p className="service-text">
+                  Bespoke, high-throughput web applications crafted with React, modern state architectures, clean APIs, and fluid performance across all viewports.
+                </p>
+                <div className="service-tags">
+                  <span className="service-tag">Next.js & Vite</span>
+                  <span className="service-tag">Cloud Native</span>
+                  <span className="service-tag">Responsive</span>
+                </div>
+              </div>
+
+              {/* Service Card 2 */}
+              <div className="service-card glass-panel">
+                <div className="service-icon-box">
+                  <Cpu size={22} className="service-icon" />
+                </div>
+                <div className="service-meta">02 / INTELLIGENCE</div>
+                <h3 className="service-title">AI & Smart Automation</h3>
+                <p className="service-text">
+                  Purposeful AI integrations and automated workflows designed to accelerate business decisions without superficial gimmickry or hallucinations.
+                </p>
+                <div className="service-tags">
+                  <span className="service-tag">Custom Agents</span>
+                  <span className="service-tag">LLM Orchestration</span>
+                  <span className="service-tag">Automated Pipelines</span>
+                </div>
+              </div>
+
+              {/* Service Card 3 */}
+              <div className="service-card glass-panel">
+                <div className="service-icon-box">
+                  <Palette size={22} className="service-icon" />
+                </div>
+                <div className="service-meta">03 / DIRECTION</div>
+                <h3 className="service-title">UI/UX & Creative Direction</h3>
+                <p className="service-text">
+                  Distinguished visual systems, tailored typography hierarchies, and tactile micro-interactions that leave a memorable, professional impression.
+                </p>
+                <div className="service-tags">
+                  <span className="service-tag">Editorial Systems</span>
+                  <span className="service-tag">Interactive 3D</span>
+                  <span className="service-tag">Design Systems</span>
+                </div>
+              </div>
+
+              {/* Service Card 4 */}
+              <div className="service-card glass-panel">
+                <div className="service-icon-box">
+                  <Workflow size={22} className="service-icon" />
+                </div>
+                <div className="service-meta">04 / STRATEGY</div>
+                <h3 className="service-title">Consulting & Deployment</h3>
+                <p className="service-text">
+                  Comprehensive code audits, performance tuning, secure deployment pipelines, and proactive technical leadership for growing businesses.
+                </p>
+                <div className="service-tags">
+                  <span className="service-tag">Vercel & AWS</span>
+                  <span className="service-tag">Audit & Security</span>
+                  <span className="service-tag">DevOps CI/CD</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION: FEATURED ENGINEERING / OUR WORK */}
+        <section className="section projects-section" id="work">
+          <div className="container">
+            <div className="section-head-center">
+              <div className="badge-pill">Production Portfolio</div>
+              <h2 className="section-heading text-center">
+                Crafted with Rigor.<br />
+                <span className="text-gradient-gold">Proven in Real Production.</span>
+              </h2>
+              <p className="section-description text-center">
+                Explore authentic digital platforms and applications built, deployed, and maintained by the To Inspire engineering team.
+              </p>
+
+              {/* Category Filter Bar */}
+              <div className="projects-filter-bar">
+                {projectCategories.map((cat) => (
+                  <button 
+                    key={cat}
+                    className={`filter-btn ${selectedCategory === cat ? 'active' : ''}`}
+                    onClick={() => setSelectedCategory(cat)}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Projects Grid */}
             <div className="projects-grid">
-              {filteredProjects.map(proj => (
-                <div key={proj.id} className="project-card">
-                  <div>
-                    <div className="project-card-header">
-                      <span className={`project-badge-tag ${proj.badgeColor}`} style={{ color: proj.accentColor }}>
-                        {proj.category}
-                      </span>
+              {filteredProjects.map((proj) => (
+                <div key={proj.id} className="project-card glass-panel">
+                  <div className="project-card-top">
+                    <div className="project-category-row">
+                      <span className="project-category-badge">{proj.category}</span>
+                      <span className="project-author-tag">By {proj.author}</span>
                     </div>
 
                     <h3 className="project-title">{proj.title}</h3>
                     <h4 className="project-subtitle">{proj.subtitle}</h4>
                     <p className="project-desc">{proj.description}</p>
-
-                    <div className="project-tags">
-                      {proj.tags.map(t => (
-                        <span key={t} className="project-tag">{t}</span>
-                      ))}
-                    </div>
                   </div>
 
-                  <div className="project-actions">
-                    <a 
-                      href={proj.live} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="btn-icon-link primary"
-                      title="View Live Web Application"
-                    >
-                      <span>Live Demo</span>
-                      <ExternalLink size={14} />
-                    </a>
-                    <a 
-                      href={proj.github} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="btn-icon-link secondary"
-                      title="View GitHub Repository"
-                    >
-                      <Github size={14} />
-                      <span>Code</span>
-                    </a>
+                  <div className="project-card-bottom">
+                    <div className="project-tags">
+                      {proj.tags.map((tag) => (
+                        <span key={tag} className="project-tag">{tag}</span>
+                      ))}
+                    </div>
+
+                    <div className="project-actions">
+                      <a 
+                        href={proj.live} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="project-btn primary"
+                        title="View Live Web Application"
+                      >
+                        <span>Launch App</span>
+                        <ExternalLink size={14} />
+                      </a>
+                      <a 
+                        href={proj.github} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="project-btn secondary"
+                        title="View Source Code Repository"
+                      >
+                        <Github size={14} />
+                        <span>Source</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -670,115 +440,135 @@ export default function App() {
           </div>
         </section>
 
-        {/* SECTION: ABOUT US */}
+        {/* SECTION: PHILOSOPHY & ABOUT */}
         <section className="section about-section" id="about">
-          <div className="container about-grid-layout">
-            <div className="about-content">
-              <div className="badge-pill">About Us</div>
-              <h2 className="section-heading">
-                Driven by Purpose,<br />Built on Innovation
-              </h2>
-              <p className="section-description">
-                TrueInspires is a team of passionate creators, developers and problem solvers. We believe in the power of technology to simplify, empower and inspire people and businesses.
-              </p>
+          <div className="container">
+            <div className="about-grid">
+              <div className="about-narrative">
+                <div className="badge-pill">Our Philosophy</div>
+                <h2 className="section-heading">
+                  Rooted in Conviction.<br />
+                  <span className="text-gradient-gold">Driven by Craftsmanship.</span>
+                </h2>
+                
+                <p className="about-lead">
+                  True engineering is not about chasing fleeting design fads or assembling generic templates. It is the deliberate art of transforming clear ideas into resilient, beautiful software that endures.
+                </p>
 
-              <div className="values-row">
-                <div className="value-item">
-                  <div className="value-icon-circle">
-                    <Lightbulb size={20} color="#1E6BFF" />
+                <div className="philosophy-points">
+                  <div className="philosophy-item">
+                    <div className="point-icon-box">
+                      <Compass size={18} />
+                    </div>
+                    <div>
+                      <h4 className="point-title">Intellectual Honesty</h4>
+                      <p className="point-text">We build what creates real human and business value—never writing code for decoration or inflating claims.</p>
+                    </div>
                   </div>
-                  <div className="value-text">
-                    <h4 className="value-title">Innovation</h4>
-                    <p className="value-desc">Always learning, always building better.</p>
-                  </div>
-                </div>
 
-                <div className="value-item">
-                  <div className="value-icon-circle">
-                    <HeartHandshake size={20} color="#1E6BFF" />
+                  <div className="philosophy-item">
+                    <div className="point-icon-box">
+                      <Terminal size={18} />
+                    </div>
+                    <div>
+                      <h4 className="point-title">Architectural Precision</h4>
+                      <p className="point-text">Clean modular systems, rigorous accessibility compliance, and silky 60fps WebGL execution across desktop and mobile.</p>
+                    </div>
                   </div>
-                  <div className="value-text">
-                    <h4 className="value-title">Client First</h4>
-                    <p className="value-desc">Your goals drive our solutions.</p>
-                  </div>
-                </div>
 
-                <div className="value-item">
-                  <div className="value-icon-circle">
-                    <ShieldCheck size={20} color="#1E6BFF" />
-                  </div>
-                  <div className="value-text">
-                    <h4 className="value-title">Quality</h4>
-                    <p className="value-desc">We deliver what we commit.</p>
+                  <div className="philosophy-item">
+                    <div className="point-icon-box">
+                      <ShieldCheck size={18} />
+                    </div>
+                    <div>
+                      <h4 className="point-title">Founder Accountability</h4>
+                      <p className="point-text">Every line of code and design decision is personally overseen and delivered by our founding engineers.</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="about-quote-card">
-              <div className="quote-icon-circle">
-                <svg viewBox="0 0 24 24" fill="#1E6BFF" width="18" height="18">
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                </svg>
+              {/* The Motto Shrine Card */}
+              <div className="about-quote-card glass-panel">
+                <div className="quote-star-monogram">
+                  <span className="star-glyph">✦</span>
+                </div>
+                <div className="sanskrit-prominent-callout">
+                  यथा कल्पना तथा रचना
+                </div>
+                <div className="sanskrit-translation">
+                  &ldquo;As the imagination, so the creation.&rdquo;
+                </div>
+                <p className="quote-explanation">
+                  This ancient maxim defines our studio creed. Whatever we conceive in the mind must be translated into material reality with uncompromising technical fidelity.
+                </p>
+                <div className="quote-founder-signature">
+                  <span>To Inspire Founding Collective</span>
+                  <span className="signature-dot">&bull;</span>
+                  <span className="signature-date">Est. 2024</span>
+                </div>
               </div>
-              <div className="quote-bg-abstract" aria-hidden="true">
-                <svg viewBox="0 0 100 100" fill="none">
-                  <path d="M30 40 Q 50 10, 80 40 T 70 90 T 20 70 Z" fill="#1E6BFF" opacity="0.9" />
-                </svg>
-              </div>
-              <blockquote className="quote-text">
-                &ldquo;We started TrueInspires with a simple belief &mdash; technology should create real value and inspire progress.&rdquo;
-              </blockquote>
-              <span className="quote-author">&mdash; TrueInspires Team</span>
             </div>
           </div>
         </section>
 
-        {/* SECTION: OUR TEAM */}
+        {/* SECTION: FOUNDERS & TEAM */}
         <section className="section team-section" id="team">
           <div className="container">
-            <div className="team-header-row">
+            <div className="section-head-dual">
               <div>
-                <div className="badge-pill">Our Team</div>
-                <h2 className="section-heading">Meet the Minds Behind TrueInspires</h2>
-                <p className="section-description">
-                  A passionate team of builders, thinkers and problem solvers working together to create impact.
-                </p>
+                <div className="badge-pill">Leadership</div>
+                <h2 className="section-heading">
+                  The Engineers Behind<br />
+                  <span className="text-gradient-gold">To Inspire</span>
+                </h2>
               </div>
-              <div className="carousel-controls">
-                <button className="carousel-arrow prev" onClick={() => handleTeamNav('prev')} aria-label="Previous Team Member">
-                  &#10094;
-                </button>
-                <button className="carousel-arrow next" onClick={() => handleTeamNav('next')} aria-label="Next Team Member">
-                  &#10095;
-                </button>
+              <div className="team-controls-block">
+                <p className="section-lead-paragraph">
+                  Direct founder involvement on every client partnership. Meet the builders driving our technical strategy.
+                </p>
+                <div className="carousel-controls">
+                  <button 
+                    className="carousel-arrow prev" 
+                    onClick={() => handleTeamNav('prev')} 
+                    aria-label="Previous Founder"
+                  >
+                    &#10094;
+                  </button>
+                  <button 
+                    className="carousel-arrow next" 
+                    onClick={() => handleTeamNav('next')} 
+                    aria-label="Next Founder"
+                  >
+                    &#10095;
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="team-cards-grid">
+            <div className="team-grid">
               {teamMembers.map((member, idx) => (
                 <div 
                   key={member.id} 
-                  className={`team-card ${activeTeamIndex === idx ? 'focused' : ''}`}
-                  style={{
-                    borderColor: activeTeamIndex === idx ? '#1E6BFF' : '#E5EDF7',
-                    boxShadow: activeTeamIndex === idx ? '0 20px 42px -10px rgba(30,107,255,0.18)' : 'var(--shadow-sm)'
-                  }}
+                  className={`team-card glass-panel ${activeTeamIndex === idx ? 'focused-card' : ''}`}
                 >
-                  <div className="team-photo-wrap">
+                  <div className="team-photo-frame">
                     <img src={member.photo} alt={member.name} className="team-photo" />
+                    <div className="team-badge-overlay">
+                      <span className="team-role-pill">{member.role}</span>
+                    </div>
                   </div>
-                  <div className="team-details">
-                    <div className="team-name-row">
+
+                  <div className="team-content">
+                    <div className="team-title-row">
                       <h3 className="team-name">{member.name}</h3>
-                      <div className="team-social-links">
+                      <div className="team-socials">
                         <a 
                           href={member.linkedin} 
                           target="_blank" 
                           rel="noopener noreferrer" 
-                          className="team-social-btn" 
-                          aria-label={`${member.name} LinkedIn Profile`}
-                          title={`${member.name} on LinkedIn`}
+                          className="team-social-icon" 
+                          aria-label={`${member.name} LinkedIn`}
                         >
                           <Linkedin size={15} />
                         </a>
@@ -786,20 +576,19 @@ export default function App() {
                           href={member.github} 
                           target="_blank" 
                           rel="noopener noreferrer" 
-                          className="team-social-btn" 
+                          className="team-social-icon" 
                           aria-label={`${member.name} GitHub`}
-                          title={`${member.name} on GitHub`}
                         >
                           <Github size={15} />
                         </a>
                       </div>
                     </div>
 
-                    <span className="team-role">{member.role}</span>
                     <p className="team-bio">{member.bio}</p>
+
                     <div className="team-tags">
-                      {member.tags.map(tag => (
-                        <span key={tag} className="tag-pill">{tag}</span>
+                      {member.tags.map((tag) => (
+                        <span key={tag} className="team-tag">{tag}</span>
                       ))}
                     </div>
                   </div>
@@ -809,90 +598,37 @@ export default function App() {
           </div>
         </section>
 
-        {/* SECTION: HOW WE WORK */}
-        <section className="section process-section">
-          <div className="container text-center-wrap">
-            <div className="badge-pill">How We Work</div>
-            <h2 className="section-heading text-center">A Simple Process. Real Results.</h2>
-            <p className="section-description text-center">
-              We follow a clear and collaborative process to turn your ideas into successful products.
-            </p>
-
-            <div className="process-steps-row">
-              <div className="process-step-item">
-                <div className="process-icon-circle bg-blue-step">
-                  <Lightbulb size={24} color="#1E6BFF" />
-                </div>
-                <div className="process-text">
-                  <h4 className="step-title"><strong>01</strong> Discover</h4>
-                  <p className="step-desc">Understand your goals, challenges and opportunities.</p>
-                </div>
-              </div>
-
-              <div className="process-arrow-col" aria-hidden="true">
-                <ArrowRight className="process-arrow" color="#94A3B8" size={20} />
-              </div>
-
-              <div className="process-step-item">
-                <div className="process-icon-circle bg-purple-step">
-                  <FileText size={24} color="#8B5CF6" />
-                </div>
-                <div className="process-text">
-                  <h4 className="step-title"><strong>02</strong> Plan</h4>
-                  <p className="step-desc">Create a clear strategy and roadmap.</p>
-                </div>
-              </div>
-
-              <div className="process-arrow-col" aria-hidden="true">
-                <ArrowRight className="process-arrow" color="#94A3B8" size={20} />
-              </div>
-
-              <div className="process-step-item">
-                <div className="process-icon-circle bg-teal-step">
-                  <Code2 size={24} color="#0D9488" />
-                </div>
-                <div className="process-text">
-                  <h4 className="step-title"><strong>03</strong> Build</h4>
-                  <p className="step-desc">Develop, test and iterate with full transparency.</p>
-                </div>
-              </div>
-
-              <div className="process-arrow-col" aria-hidden="true">
-                <ArrowRight className="process-arrow" color="#94A3B8" size={20} />
-              </div>
-
-              <div className="process-step-item">
-                <div className="process-icon-circle bg-orange-step">
-                  <Rocket size={24} color="#F97316" />
-                </div>
-                <div className="process-text">
-                  <h4 className="step-title"><strong>04</strong> Deliver</h4>
-                  <p className="step-desc">Launch and support for long-term success.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION: CTA BANNER */}
+        {/* SECTION: CTA INITIATE BANNER */}
         <section className="section cta-section" id="contact">
           <div className="container">
-            <div className="cta-banner-card">
-              <div className="cta-text-wrap">
-                <div className="badge-pill bg-white">Let's Build Together</div>
-                <h2 className="cta-heading">Have an Idea? Let's Bring It to Life.</h2>
-                <p className="cta-subheading">
-                  Whether you're a startup, a business or an individual, we're here to help you turn your ideas into impactful digital solutions.
+            <div className="cta-monolith glass-panel">
+              <div className="cta-content-column">
+                <div className="badge-pill">Initiate Engagement</div>
+                <h2 className="cta-headline">
+                  Ready to Build Something<br />
+                  <span className="text-gradient-gold">Truly Distinctive?</span>
+                </h2>
+                <p className="cta-text">
+                  Whether you are architecting a ground-up platform or elevating an existing product, let's explore how deliberate engineering can accelerate your vision.
                 </p>
+                <div className="cta-actions-row">
+                  <button 
+                    className="btn btn-gold" 
+                    onClick={() => { setIsModalOpen(true); setModalType('project'); }}
+                  >
+                    <span>Start a Project</span>
+                    <ArrowRight className="icon-arrow" size={16} />
+                  </button>
+                  <button 
+                    className="btn btn-glass" 
+                    onClick={() => { setIsModalOpen(true); setModalType('contact'); }}
+                  >
+                    <span>Send Direct Message</span>
+                  </button>
+                </div>
               </div>
-              <div className="cta-actions">
-                <button className="btn btn-dark" onClick={() => { setIsModalOpen(true); setModalType('project'); }}>
-                  <span>Start a Project</span>
-                  <ArrowRight className="icon-arrow" size={16} />
-                </button>
-                <button className="btn btn-white" onClick={() => { setIsModalOpen(true); setModalType('contact'); }}>
-                  <span>Contact Us</span>
-                </button>
+              <div className="cta-sanskrit-flank" aria-hidden="true">
+                <span className="sanskrit-monolith-text">यथा कल्पना तथा रचना</span>
               </div>
             </div>
           </div>
@@ -903,35 +639,42 @@ export default function App() {
       <footer className="footer-wrap">
         <div className="container">
           <div className="footer-grid">
+            {/* Brand Column */}
             <div className="footer-brand-col">
               <a href="#home" className="brand-logo footer-logo">
-                <svg className="logo-mark" viewBox="0 0 32 32" fill="none">
-                  <rect x="3" y="4" width="7" height="24" rx="3.5" fill="#0A192F" />
-                  <rect x="12.5" y="8" width="7" height="20" rx="3.5" fill="#1E6BFF" />
-                  <rect x="22" y="14" width="7" height="14" rx="3.5" fill="#38BDF8" />
-                </svg>
-                <span className="logo-text">TrueInspires</span>
+                <div className="brand-logo-frame">
+                  <img src="/assets/true_inspire.jpeg" alt="To Inspire Logo" className="brand-logo-img" />
+                </div>
+                <div className="brand-text-block">
+                  <span className="brand-name">TO INSPIRE</span>
+                  <span className="brand-sanskrit">यथा कल्पना तथा रचना</span>
+                </div>
               </a>
-              <p className="footer-tagline">Designing, Developing, Delivering.</p>
               <p className="footer-desc">
-                We build digital solutions that inspire people and create real impact.
+                Autonomous creative engineering, expressive typography, and robust software architectures crafted in Bhubaneswar, India.
               </p>
+              <div className="footer-origin-badge">
+                <span className="badge-dot"></span>
+                <span>As Conceived, So Created &bull; V3.0</span>
+              </div>
             </div>
 
+            {/* Quick Links */}
             <div className="footer-nav-col">
-              <h4 className="footer-col-title">Quick Links</h4>
+              <h4 className="footer-col-title">Navigation</h4>
               <ul className="footer-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#work">Our Work</a></li>
-                <li><a href="#team">Team</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#home">Overview</a></li>
+                <li><a href="#services">Services & Architecture</a></li>
+                <li><a href="#work">Production Work</a></li>
+                <li><a href="#about">Studio Philosophy</a></li>
+                <li><a href="#team">Founding Team</a></li>
+                <li><a href="#contact">Initiate Project</a></li>
               </ul>
             </div>
 
+            {/* Verified Projects */}
             <div className="footer-nav-col">
-              <h4 className="footer-col-title">Our Projects</h4>
+              <h4 className="footer-col-title">Live Deliverables</h4>
               <ul className="footer-links">
                 <li><a href="https://doseloop.vercel.app/" target="_blank" rel="noopener noreferrer">DOSELOOP ↗</a></li>
                 <li><a href="https://expense-so.vercel.app/" target="_blank" rel="noopener noreferrer">ExpenseSO ↗</a></li>
@@ -941,122 +684,136 @@ export default function App() {
               </ul>
             </div>
 
-            <div className="footer-social-col">
-              <h4 className="footer-col-title">Connect With Us</h4>
-              <div className="social-icons-row">
-                <a 
-                  href="https://www.linkedin.com/in/chandan-mahapatra/" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="social-icon-btn" 
-                  aria-label="Chandan Mahapatra LinkedIn"
-                  title="Chandan Mahapatra on LinkedIn"
-                >
-                  <Linkedin size={18} />
-                </a>
-                <a 
-                  href="https://www.linkedin.com/in/sakashdora" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="social-icon-btn" 
-                  aria-label="S Akash Dora LinkedIn"
-                  title="S Akash Dora on LinkedIn"
-                >
-                  <Linkedin size={18} />
-                </a>
-                <a 
-                  href="https://github.com/sakashdora" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="social-icon-btn" 
-                  aria-label="GitHub Team Repositories"
-                  title="GitHub Repositories"
-                >
-                  <Github size={18} />
-                </a>
-                <a 
-                  href="mailto:contact@trueinspires.com" 
-                  className="social-icon-btn" 
-                  aria-label="Email TrueInspires"
-                  title="Email Us"
-                >
-                  <Mail size={18} />
-                </a>
-              </div>
-              <p className="footer-subtext">Let's create something amazing together.</p>
+            {/* Founder Links */}
+            <div className="footer-nav-col">
+              <h4 className="footer-col-title">Founders & Connect</h4>
+              <ul className="footer-links">
+                <li><a href="https://www.linkedin.com/in/chandan-mahapatra/" target="_blank" rel="noopener noreferrer">Chandan Mahapatra (LinkedIn) ↗</a></li>
+                <li><a href="https://github.com/im-chandanmahapatra" target="_blank" rel="noopener noreferrer">Chandan (GitHub) ↗</a></li>
+                <li><a href="https://www.linkedin.com/in/sakashdora" target="_blank" rel="noopener noreferrer">S Akash Dora (LinkedIn) ↗</a></li>
+                <li><a href="https://github.com/sakashdora" target="_blank" rel="noopener noreferrer">S Akash Dora (GitHub) ↗</a></li>
+                <li><a href="mailto:myselfazure@gmail.com">Direct Inquiry (Email) ↗</a></li>
+              </ul>
             </div>
           </div>
 
-          <div className="footer-bottom-row">
-            <span className="copyright">&copy; 2026 TrueInspires. All rights reserved.</span>
-            <span className="tagline-badge">Innovate &bull; Build &bull; Inspire</span>
+          <div className="footer-bottom-bar">
+            <p>&copy; {new Date().getFullYear()} To Inspire. All rights reserved. Built with deliberate craft.</p>
+            <div className="footer-legal-links">
+              <span>यथा कल्पना तथा रचना</span>
+              <span className="dot-sep">&bull;</span>
+              <span>TrueInspires V3.0</span>
+            </div>
           </div>
         </div>
       </footer>
 
-      {/* INTERACTIVE MODAL */}
-      <div className={`modal-backdrop ${isModalOpen ? 'active' : ''}`} aria-hidden={!isModalOpen}>
-        <div className="modal-card">
-          <button className="modal-close-btn" onClick={() => setIsModalOpen(false)} aria-label="Close modal">
-            <X size={18} />
-          </button>
-          <div className="modal-badge badge-pill">Let's Build Together</div>
-          <h3 className="modal-title">
-            {modalType === 'talk' ? 'Schedule a Technical Consultation' : 'Start Your Project with TrueInspires'}
-          </h3>
-          <p className="modal-desc">
-            Tell us about your idea and we'll reply within 24 hours with an actionable blueprint.
-          </p>
-
-          <form className="modal-form" onSubmit={handleFormSubmit}>
-            <div className="form-group">
-              <label>Select Project Scope</label>
-              <div className="chip-options">
-                {['Web & App', 'AI & Automation', 'UI/UX Design', 'Full MVP'].map(chip => (
-                  <button 
-                    key={chip}
-                    type="button" 
-                    className={`chip ${selectedProjectType === chip ? 'active' : ''}`}
-                    onClick={() => setSelectedProjectType(chip)}
-                  >
-                    {chip}
-                  </button>
-                ))}
+      {/* ENGAGEMENT & CONTACT MODAL */}
+      {isModalOpen && (
+        <div className="modal-backdrop" onClick={() => setIsModalOpen(false)}>
+          <div 
+            className="modal-container glass-panel" 
+            onClick={(e) => e.stopPropagation()} 
+            role="dialog" 
+            aria-modal="true"
+          >
+            <div className="modal-header">
+              <div>
+                <span className="modal-eyebrow">
+                  {modalType === 'project' ? 'Initiate Project' : 'Direct Conversation'}
+                </span>
+                <h3 className="modal-title">
+                  {modalType === 'project' ? 'Let’s Build Something Meaningful' : 'Connect with the Founders'}
+                </h3>
               </div>
+              <button 
+                className="modal-close-btn" 
+                onClick={() => setIsModalOpen(false)}
+                aria-label="Close dialog"
+              >
+                <X size={18} />
+              </button>
             </div>
 
-            <div className="form-row">
+            <form onSubmit={handleFormSubmit} className="modal-form">
+              {modalType === 'project' && (
+                <div className="form-group">
+                  <label className="form-label">Project Domain</label>
+                  <div className="project-type-pills">
+                    {['Web & App Development', 'AI & Automation', 'UI/UX Design', 'Architecture Consulting'].map((type) => (
+                      <button
+                        type="button"
+                        key={type}
+                        className={`type-pill ${selectedProjectType === type ? 'active' : ''}`}
+                        onClick={() => setSelectedProjectType(type)}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="form-grid-2">
+                <div className="form-group">
+                  <label className="form-label" htmlFor="clientName">Your Name</label>
+                  <input 
+                    type="text" 
+                    id="clientName" 
+                    className="form-input" 
+                    placeholder="e.g. Alex Carter" 
+                    required 
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label" htmlFor="clientEmail">Email Address</label>
+                  <input 
+                    type="email" 
+                    id="clientEmail" 
+                    className="form-input" 
+                    placeholder="alex@company.com" 
+                    required 
+                  />
+                </div>
+              </div>
+
               <div className="form-group">
-                <label htmlFor="modalUserName">Your Name</label>
-                <input type="text" id="modalUserName" placeholder="e.g. Alex Carter" required />
+                <label className="form-label" htmlFor="clientMsg">Project Details & Objectives</label>
+                <textarea 
+                  id="clientMsg" 
+                  rows={4} 
+                  className="form-input textarea" 
+                  placeholder="Tell us about your objectives, timeline, or scope..." 
+                  required
+                ></textarea>
               </div>
-              <div className="form-group">
-                <label htmlFor="modalUserEmail">Work Email</label>
-                <input type="email" id="modalUserEmail" placeholder="alex@company.com" required />
+
+              <div className="modal-actions">
+                <button type="button" className="btn btn-glass" onClick={() => setIsModalOpen(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-gold">
+                  <span>Send Proposal Request</span>
+                  <Send size={15} />
+                </button>
               </div>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="modalDetails">Project Overview & Timeline</label>
-              <textarea id="modalDetails" rows="3" placeholder="Briefly describe what you'd like to build..." required></textarea>
-            </div>
-
-            <button type="submit" className="btn btn-blue btn-full">
-              <span>Send Project Brief</span>
-              <ArrowRight className="icon-arrow" size={16} />
-            </button>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* TOAST NOTIFICATION */}
-      <div className={`toast-notification ${showToast ? 'show' : ''}`} role="alert">
-        <div className="toast-icon">&#10003;</div>
-        <div className="toast-content">
-          <strong>Message Sent!</strong>
-          <span>Thank you! The TrueInspires team will get back to you shortly.</span>
+      {/* SUCCESS TOAST NOTIFICATION */}
+      {showToast && (
+        <div className="toast-notification glass-panel">
+          <div className="toast-icon-circle">
+            <CheckCircle2 size={18} />
+          </div>
+          <div>
+            <div className="toast-title">Message Transmitted</div>
+            <div className="toast-desc">Thank you. The To Inspire founders will respond within 24 hours.</div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
