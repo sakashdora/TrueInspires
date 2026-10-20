@@ -63,7 +63,7 @@ export default function ThreeCanvas({ theme = 'dark' }) {
     pointLight.position.set(0, 1.5, 2);
     scene.add(pointLight);
 
-    // 4. Central Emblem Group: Reflecting To Inspire's Winged Torch & Star Crest
+    // 4. Central Emblem Group: Reflecting True Inspire's Winged Torch & Star Crest
     const emblemGroup = new THREE.Group();
     scene.add(emblemGroup);
 

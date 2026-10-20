@@ -7,7 +7,7 @@ export const projects = [
     category: 'Edge AI & Vision',
     badgeColor: 'badge-amber',
     accentColor: '#F59E0B',
-    collaboration: 'Built by the To Inspire team',
+    collaboration: 'Built by the True Inspire team',
     github: 'https://github.com/sakashdora/PPE-PROJECT.git',
     live: 'https://github.com/sakashdora/PPE-PROJECT',
     tags: ['YOLOv11s ONNX', 'OpenVINO', 'NestJS WS', 'Next.js 15', 'Prisma ORM']
@@ -33,7 +33,7 @@ export const projects = [
     category: 'Digital Experiences',
     badgeColor: 'badge-pink',
     accentColor: '#EC4899',
-    collaboration: 'Built by the To Inspire team',
+    collaboration: 'Built by the True Inspire team',
     isDualDestination: true,
     destinations: [
       {
@@ -57,7 +57,7 @@ export const projects = [
     category: 'Digital Health',
     badgeColor: 'badge-emerald',
     accentColor: '#10B981',
-    collaboration: 'Built by the To Inspire team',
+    collaboration: 'Built by the True Inspire team',
     github: 'https://github.com/im-chandanmahapatra/DOSELOOP.git',
     live: 'https://doseloop.vercel.app/',
     tags: ['React', 'TypeScript', 'TanStack Router', 'TanStack Query', 'Supabase']
@@ -70,7 +70,7 @@ export const projects = [
     category: 'Digital Experiences',
     badgeColor: 'badge-cyan',
     accentColor: '#06B6D4',
-    collaboration: 'Built by the To Inspire team',
+    collaboration: 'Built by the True Inspire team',
     github: 'https://github.com/sakashdora/CrossFire.git',
     live: 'https://cross-fire-three.vercel.app/',
     tags: ['React 18', 'TypeScript', 'Supabase Auth & DB', 'Crypto QR', 'Vite 6']
@@ -79,11 +79,11 @@ export const projects = [
     id: 'social-media-project',
     title: 'Social Media Project',
     subtitle: 'Status: Coming Soon',
-    description: 'A privacy-conscious social networking and creator platform currently under active development by the To Inspire engineering team. Interface architecture, media rendering pipelines, and distributed data systems are being refined prior to public release.',
+    description: 'A privacy-conscious social networking and creator platform currently under active development by the True Inspire engineering team. Interface architecture, media rendering pipelines, and distributed data systems are being refined prior to public release.',
     category: 'Digital Experiences',
     badgeColor: 'badge-indigo',
     accentColor: '#6366F1',
-    collaboration: 'Built by the To Inspire team',
+    collaboration: 'Built by the True Inspire team',
     isUpcoming: true,
     tags: ['In Active Development', 'TypeScript', 'Distributed State', 'Coming Soon']
   }

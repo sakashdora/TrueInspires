@@ -171,16 +171,16 @@ export default function App() {
       <header className={`navbar-wrapper ${isScrolled ? 'scrolled' : ''}`} id="navbar">
         <div className="nav-container">
           {/* Authentic Brand Lockup with Real Master Logo Asset */}
-          <a href="#home" className="brand-logo" aria-label="To Inspire Home">
+          <a href="#home" className="brand-logo" aria-label="True Inspire Home">
             <div className="brand-logo-frame">
               <img 
                 src="/assets/true_inspire.jpeg" 
-                alt="To Inspire Logo" 
+                alt="True Inspire Logo" 
                 className="brand-logo-img" 
               />
             </div>
             <div className="brand-text-block">
-              <span className="brand-name">TO INSPIRE</span>
+              <span className="brand-name">TRUE INSPIRE</span>
               <span className="brand-sanskrit">यथा कल्पना तथा रचना</span>
             </div>
           </a>
@@ -315,7 +315,7 @@ export default function App() {
 
             {/* Factual Subtitle */}
             <p className="hero-anim-item hero-subtitle">
-              Founded by <strong>Chandan Mahapatra</strong> and <strong>S Akash Dora</strong> in Odisha, To Inspire designs and builds dependable web applications, edge AI systems, and interactive digital experiences.
+              Founded by <strong>Chandan Mahapatra</strong> and <strong>S Akash Dora</strong> in Odisha, True Inspire designs and builds dependable web applications, edge AI systems, and interactive digital experiences.
             </p>
 
             {/* Action Group */}
@@ -619,7 +619,7 @@ export default function App() {
                   This motto defines how we approach our work. Whatever we conceive in our planning is brought into reality with attention to detail and sound engineering.
                 </p>
                 <div className="quote-founder-signature">
-                  <span>To Inspire Team</span>
+                  <span>True Inspire Team</span>
                   <span className="signature-dot">&bull;</span>
                   <span className="signature-date">Odisha, India</span>
                 </div>
@@ -636,7 +636,7 @@ export default function App() {
                 <div className="badge-pill">Founders</div>
                 <h2 className="section-heading">
                   The Team Behind<br />
-                  <span className="text-gradient-gold">To Inspire</span>
+                  <span className="text-gradient-gold">True Inspire</span>
                 </h2>
               </div>
               <div className="team-controls-block">
@@ -758,10 +758,10 @@ export default function App() {
             <div className="footer-brand-col">
               <a href="#home" className="brand-logo footer-logo">
                 <div className="brand-logo-frame">
-                  <img src="/assets/true_inspire.jpeg" alt="To Inspire Logo" className="brand-logo-img" />
+                  <img src="/assets/true_inspire.jpeg" alt="True Inspire Logo" className="brand-logo-img" />
                 </div>
                 <div className="brand-text-block">
-                  <span className="brand-name">TO INSPIRE</span>
+                  <span className="brand-name">TRUE INSPIRE</span>
                   <span className="brand-sanskrit">यथा कल्पना तथा रचना</span>
                 </div>
               </a>
@@ -814,7 +814,7 @@ export default function App() {
           </div>
 
           <div className="footer-bottom-bar">
-            <p>&copy; {new Date().getFullYear()} To Inspire. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} True Inspire. All rights reserved.</p>
             <div className="footer-legal-links">
               <span>यथा कल्पना तथा रचना</span>
               <span className="dot-sep">&bull;</span>
@@ -837,7 +837,7 @@ export default function App() {
             <div className="modal-header">
               <div>
                 <span className="modal-eyebrow">Direct Contact</span>
-                <h3 className="modal-title" id="contact-modal-title">Get in Touch with To Inspire</h3>
+                <h3 className="modal-title" id="contact-modal-title">Get in Touch with True Inspire</h3>
               </div>
               <button 
                 className="modal-close-btn" 
@@ -923,7 +923,7 @@ export default function App() {
           </div>
           <div>
             <div className="toast-title">Message Sent</div>
-            <div className="toast-desc">Thank you. The To Inspire team will get back to you shortly.</div>
+            <div className="toast-desc">Thank you. The True Inspire team will get back to you shortly.</div>
           </div>
         </div>
       )}
