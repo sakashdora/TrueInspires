@@ -26,7 +26,9 @@ import {
   Sun, 
   Moon,
   Workflow,
-  Clock
+  Clock,
+  Copy,
+  Check
 } from 'lucide-react';
 
 export default function App() {
@@ -49,7 +51,28 @@ export default function App() {
 
   // Modal & Toast States
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProjectType, setSelectedProjectType] = useState('Web Architecture');
+  const [copiedEmail, setCopiedEmail] = useState(false);
   const [showToast, setShowToast] = useState(false);
+
+  // Copy Email to Clipboard Handler with spring feedback
+  const handleCopyEmail = (e) => {
+    e.preventDefault();
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText('myselfazure@gmail.com');
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2600);
+    }
+  };
+
+  // Dynamic Cursor Light Spotlight Handler
+  const handleCtaMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    e.currentTarget.style.setProperty('--cta-mouse-x', `${x}px`);
+    e.currentTarget.style.setProperty('--cta-mouse-y', `${y}px`);
+  };
 
   // Projects Filter State
   const [selectedCategory, setSelectedCategory] = useState('All Work');
@@ -692,33 +715,78 @@ export default function App() {
         {/* SECTION: CONTACT (#contact) */}
         <section className="section cta-section" id="contact">
           <div className="container">
-            <div className="cta-monolith glass-panel">
+            <div 
+              className="cta-monolith glass-panel"
+              onMouseMove={handleCtaMouseMove}
+            >
               <div className="cta-content-column">
-                <div className="badge-pill">Initiate Contact</div>
+                <div className="badge-pill cta-badge">
+                  <span className="badge-dot"></span>
+                  <span>Inception &bull; Direct Contact</span>
+                </div>
+
                 <h2 className="cta-headline">
-                  Let's Discuss<br />
-                  <span className="text-gradient-gold">Your Project</span>
+                  <span className="cta-subhead-sans">LET'S DISCUSS</span>
+                  <span className="cta-display-serif text-gradient-gold">Your Next Project</span>
                 </h2>
+
                 <p className="cta-text">
-                  Whether you are planning a new software application, looking to build an interactive digital experience, or exploring technical collaboration, we would be glad to hear from you.
+                  Whether you are planning a high-throughput web application, on-device edge AI intelligence, or a bespoke digital experience, we bring architectural rigor to every collaboration.
                 </p>
+
+                {/* Interactive Project Intent Chips */}
+                <div className="cta-intent-chips">
+                  <span className="cta-intent-label">Select an area to explore:</span>
+                  <div className="intent-pills-row">
+                    {['Web Architecture', 'Edge AI & Vision', 'Interactive 3D', 'FinTech Telemetry'].map((type) => (
+                      <button
+                        key={type}
+                        type="button"
+                        className="intent-pill"
+                        onClick={() => {
+                          setSelectedProjectType(type);
+                          setIsModalOpen(true);
+                        }}
+                      >
+                        <span>{type}</span>
+                        <span className="pill-plus">+</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Primary Action & Interactive Copy Email */}
                 <div className="cta-actions-row">
                   <button 
-                    className="btn btn-brand" 
-                    onClick={() => setIsModalOpen(true)}
+                    className="btn btn-brand cta-primary-btn" 
+                    onClick={() => { setSelectedProjectType('General Inquiry'); setIsModalOpen(true); }}
                   >
-                    <span>Send a Message</span>
+                    <span>Start a Conversation</span>
                     <ArrowRight className="icon-arrow" size={16} />
                   </button>
-                  <a 
-                    href="mailto:myselfazure@gmail.com" 
-                    className="btn btn-glass"
+
+                  <button 
+                    type="button"
+                    className={`btn btn-glass copy-email-btn ${copiedEmail ? 'copied' : ''}`}
+                    onClick={handleCopyEmail}
+                    title="Click to copy email address"
                   >
-                    <Mail size={15} />
-                    <span>myselfazure@gmail.com</span>
-                  </a>
+                    {copiedEmail ? (
+                      <>
+                        <Check size={15} className="text-emerald" />
+                        <span>Copied to Clipboard!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Mail size={15} />
+                        <span>myselfazure@gmail.com</span>
+                        <span className="copy-badge"><Copy size={11} /> Copy</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
+
               <div className="cta-sanskrit-flank" aria-hidden="true">
                 <span className="sanskrit-monolith-text">यथा कल्पना तथा रचना</span>
               </div>
@@ -855,6 +923,8 @@ export default function App() {
                   type="text" 
                   id="projectType" 
                   className="form-input" 
+                  value={selectedProjectType}
+                  onChange={(e) => setSelectedProjectType(e.target.value)}
                   placeholder="e.g. Full-Stack Web App, Edge AI, Digital Experience..." 
                 />
               </div>

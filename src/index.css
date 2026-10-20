@@ -1170,33 +1170,156 @@ a {
 }
 
 /* --------------------------------------------------------------------------
-   CTA INITIATE MONOLITH
+   CTA INITIATE MONOLITH (ELEVATED COLOR, TYPOGRAPHY & MOTION)
    -------------------------------------------------------------------------- */
 .cta-monolith {
-  padding: 72px 56px;
+  padding: clamp(52px, 6vw, 84px) clamp(28px, 5vw, 68px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: relative;
   overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.4s var(--ease-smooth), box-shadow 0.4s var(--ease-smooth);
+}
+
+/* Interactive Cursor Spotlight Glow */
+.cta-monolith::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    520px circle at var(--cta-mouse-x, 50%) var(--cta-mouse-y, 50%),
+    rgba(212, 175, 55, 0.15),
+    transparent 65%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  border-radius: 28px;
+}
+
+[data-theme="light"] .cta-monolith::before {
+  background: radial-gradient(
+    520px circle at var(--cta-mouse-x, 50%) var(--cta-mouse-y, 50%),
+    rgba(124, 58, 237, 0.12),
+    transparent 65%
+  );
+}
+
+.cta-monolith:hover::before {
+  opacity: 1;
+}
+
+.cta-monolith:hover {
   border-color: var(--border-hover);
+  box-shadow: var(--shadow-hover);
 }
 
 .cta-content-column {
-  max-width: 640px;
+  max-width: 660px;
+  position: relative;
+  z-index: 2;
 }
 
-.cta-headline {
-  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+.cta-badge {
   margin-bottom: 20px;
 }
 
-.cta-text {
-  font-size: 1.05rem;
-  line-height: 1.7;
-  margin-bottom: 36px;
+.cta-headline {
+  font-size: clamp(2.4rem, 5.2vw, 4rem);
+  line-height: 1.08;
+  margin-bottom: 22px;
+  display: flex;
+  flex-direction: column;
 }
 
+.cta-subhead-sans {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-brand-primary);
+  margin-bottom: 8px;
+}
+
+.cta-display-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.cta-text {
+  font-size: clamp(1rem, 1.6vw, 1.1rem);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  max-width: 600px;
+}
+
+/* Interactive Project Intent Discovery Chips */
+.cta-intent-chips {
+  margin: 24px 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cta-intent-label {
+  font-family: var(--font-mono);
+  font-size: 0.725rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.intent-pills-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.intent-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: 0.775rem;
+  background: var(--tag-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.intent-pill .pill-plus {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--color-brand-primary);
+  transition: transform 0.25s ease;
+}
+
+.intent-pill:hover {
+  background: var(--badge-bg);
+  border-color: var(--color-brand-primary);
+  color: var(--color-brand-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-tactile);
+}
+
+.intent-pill:hover .pill-plus {
+  transform: rotate(45deg);
+}
+
+/* CTA Action Buttons & Motion */
 .cta-actions-row {
   display: flex;
   align-items: center;
@@ -1204,15 +1327,83 @@ a {
   flex-wrap: wrap;
 }
 
+.cta-primary-btn {
+  padding: 12px 26px;
+  font-size: 0.925rem;
+  letter-spacing: 0.02em;
+}
+
+.cta-primary-btn:hover .icon-arrow {
+  transform: translateX(4px);
+}
+
+.cta-primary-btn .icon-arrow {
+  transition: transform 0.25s var(--ease-smooth);
+}
+
+.copy-email-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 20px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  position: relative;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.copy-email-btn .copy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--badge-bg);
+  color: var(--color-brand-primary);
+  border: 1px solid var(--border-subtle);
+  transition: all var(--transition-normal);
+}
+
+.copy-email-btn:hover .copy-badge {
+  background: var(--color-brand-primary);
+  color: var(--color-brand-text);
+}
+
+.copy-email-btn.copied {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: #10B981;
+  color: #10B981;
+  animation: spring-pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes spring-pop {
+  0% { transform: scale(0.94); }
+  50% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+/* Sanskrit Watermark Flank */
 .cta-sanskrit-flank {
-  opacity: 0.06;
+  opacity: 0.08;
   font-family: var(--font-serif);
-  font-size: 5rem;
+  font-size: clamp(4.5rem, 7vw, 7.5rem);
   writing-mode: vertical-rl;
   text-orientation: mixed;
   color: var(--color-brand-primary);
   pointer-events: none;
   user-select: none;
+  transition: opacity 0.5s ease, transform 0.5s var(--ease-smooth);
+  letter-spacing: 0.16em;
+  margin-left: 24px;
+}
+
+.cta-monolith:hover .cta-sanskrit-flank {
+  opacity: 0.18;
+  transform: translateY(-8px);
 }
 
 /* --------------------------------------------------------------------------
@@ -1755,11 +1946,20 @@ body.mobile-menu-locked {
 
   /* Contact Monolith */
   .cta-monolith {
-    padding: 36px 20px;
+    padding: 38px 22px;
   }
 
   .cta-sanskrit-flank {
     display: none;
+  }
+
+  .intent-pills-row {
+    gap: 8px;
+  }
+
+  .intent-pill {
+    padding: 7px 14px;
+    font-size: 0.725rem;
   }
 
   .cta-actions-row {
@@ -1768,7 +1968,8 @@ body.mobile-menu-locked {
     gap: 12px;
   }
 
-  .cta-actions-row .btn {
+  .cta-actions-row .btn,
+  .copy-email-btn {
     width: 100%;
     justify-content: center;
     min-height: 44px;
@@ -1862,14 +2063,24 @@ body.mobile-menu-locked {
     width: 100%;
   }
 
-  .project-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
   .project-btn {
     width: 100%;
     justify-content: center;
+  }
+
+  .intent-pills-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .intent-pill {
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 0.7rem;
   }
 
   .toast-notification {
