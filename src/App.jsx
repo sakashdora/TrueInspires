@@ -301,10 +301,10 @@ export default function App() {
           <div className="hero-container">
             {/* Top Eyebrow Badge Pill */}
             <div className="hero-anim-item badge-pill hero-badge">
-              <Sparkles className="sparkle-icon" size={13} />
-              <span>Creative Engineering Studio</span>
+              <span className="badge-dot"></span>
+              <span>Software Engineering &amp; Applied Systems</span>
               <span className="badge-divider">&bull;</span>
-              <span className="badge-sanskrit-accent">यथा कल्पना तथा रचना</span>
+              <span>Odisha, India</span>
             </div>
 
             {/* Main Editorial Headline */}
