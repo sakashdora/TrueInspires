@@ -5,6 +5,7 @@ import { projects, projectCategories } from './data/projects';
 import { teamMembers } from './data/team';
 import { 
   ArrowRight, 
+  ArrowUp,
   ExternalLink, 
   Github, 
   Linkedin, 
@@ -795,12 +796,12 @@ export default function App() {
         </section>
       </main>
 
-      {/* FOOTER */}
+      {/* CLEAN MINIMAL FOOTER */}
       <footer className="footer-wrap">
         <div className="container">
-          <div className="footer-grid">
-            {/* Brand Column */}
-            <div className="footer-brand-col">
+          <div className="footer-minimal-inner">
+            {/* Left: Studio Identity & Origin */}
+            <div className="footer-brand-pane">
               <a href="#home" className="brand-logo footer-logo">
                 <div className="brand-logo-frame">
                   <img src="/assets/true_inspire.jpeg" alt="True Inspire Logo" className="brand-logo-img" />
@@ -810,60 +811,73 @@ export default function App() {
                   <span className="brand-sanskrit">यथा कल्पना तथा रचना</span>
                 </div>
               </a>
-              <p className="footer-desc">
-                Creative engineering studio building web platforms, edge computer vision systems, and interactive digital experiences.
+              <p className="footer-minimal-tagline">
+                Creative Engineering Studio &bull; Software &amp; Applied Systems &bull; Odisha, India
               </p>
-              <div className="footer-origin-badge">
-                <span className="badge-dot"></span>
-                <span>Bhubaneswar, Odisha &bull; India</span>
-              </div>
             </div>
 
-            {/* Quick Links */}
-            <div className="footer-nav-col">
-              <h4 className="footer-col-title">Navigation</h4>
-              <ul className="footer-links">
-                <li><a href="#home">Overview</a></li>
-                <li><a href="#services">Capabilities</a></li>
-                <li><a href="#work">Selected Work</a></li>
-                <li><a href="#about">Creed &amp; Philosophy</a></li>
-                <li><a href="#team">Founding Team</a></li>
-                <li><a href="#contact">Contact</a></li>
-              </ul>
-            </div>
+            {/* Right: Inline Navigation & Back to Top */}
+            <div className="footer-nav-pane">
+              <nav className="footer-inline-nav" aria-label="Footer Navigation">
+                <a href="#home">Overview</a>
+                <a href="#services">Capabilities</a>
+                <a href="#work">Work</a>
+                <a href="#about">Creed</a>
+                <a href="#team">Team</a>
+                <a href="#contact">Contact</a>
+              </nav>
 
-            {/* Verified Platforms */}
-            <div className="footer-nav-col">
-              <h4 className="footer-col-title">Selected Projects</h4>
-              <ul className="footer-links">
-                <li><a href="https://github.com/sakashdora/PPE-PROJECT" target="_blank" rel="noopener noreferrer">ARGUS AI (Vision) ↗</a></li>
-                <li><a href="https://riskrule.in/" target="_blank" rel="noopener noreferrer">RiskRule (FinTech) ↗</a></li>
-                <li><a href="https://freshers-party-beige.vercel.app/" target="_blank" rel="noopener noreferrer">TEJAS 2026 (Student) ↗</a></li>
-                <li><a href="https://teacherinvitation.vercel.app/" target="_blank" rel="noopener noreferrer">TEJAS 2026 (Faculty) ↗</a></li>
-                <li><a href="https://doseloop.vercel.app/" target="_blank" rel="noopener noreferrer">DoseLoop (Health) ↗</a></li>
-                <li><a href="https://cross-fire-three.vercel.app/" target="_blank" rel="noopener noreferrer">CrossFire 2026 ↗</a></li>
-              </ul>
-            </div>
-
-            {/* Team & Contact */}
-            <div className="footer-nav-col">
-              <h4 className="footer-col-title">Connect</h4>
-              <ul className="footer-links">
-                <li><a href="https://www.linkedin.com/in/chandan-mahapatra/" target="_blank" rel="noopener noreferrer">Chandan Mahapatra (LinkedIn) ↗</a></li>
-                <li><a href="https://github.com/im-chandanmahapatra" target="_blank" rel="noopener noreferrer">Chandan (GitHub) ↗</a></li>
-                <li><a href="https://www.linkedin.com/in/sakashdora" target="_blank" rel="noopener noreferrer">S Akash Dora (LinkedIn) ↗</a></li>
-                <li><a href="https://github.com/sakashdora" target="_blank" rel="noopener noreferrer">S Akash Dora (GitHub) ↗</a></li>
-                <li><a href="mailto:myselfazure@gmail.com">Direct Email ↗</a></li>
-              </ul>
+              <button 
+                type="button" 
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+                className="footer-back-to-top"
+                aria-label="Scroll back to top"
+              >
+                <span>Back to top</span>
+                <ArrowUp size={13} className="icon-back-to-top" />
+              </button>
             </div>
           </div>
 
-          <div className="footer-bottom-bar">
-            <p>&copy; {new Date().getFullYear()} True Inspire. All rights reserved.</p>
-            <div className="footer-legal-links">
-              <span>यथा कल्पना तथा रचना</span>
-              <span className="dot-sep">&bull;</span>
-              <span>Odisha, India</span>
+          {/* Hairline Divider & Bottom Metadata */}
+          <div className="footer-minimal-bottom">
+            <div className="footer-copyright-block">
+              <span>&copy; {new Date().getFullYear()} TRUE INSPIRE. All rights reserved.</span>
+              <span className="footer-meta-sep">&bull;</span>
+              <span className="footer-motto-tag">यथा कल्पना तथा रचना</span>
+            </div>
+
+            <div className="footer-channels-block">
+              <a 
+                href="mailto:myselfazure@gmail.com" 
+                className="footer-channel-item"
+                title="Send Direct Email"
+              >
+                <Mail size={13} />
+                <span>myselfazure@gmail.com</span>
+              </a>
+              <span className="footer-channel-sep">/</span>
+              <a 
+                href="https://github.com/im-chandanmahapatra" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="footer-channel-item"
+                title="True Inspire GitHub"
+              >
+                <Github size={13} />
+                <span>GitHub</span>
+              </a>
+              <span className="footer-channel-sep">/</span>
+              <a 
+                href="https://www.linkedin.com/in/chandan-mahapatra/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="footer-channel-item"
+                title="True Inspire LinkedIn"
+              >
+                <Linkedin size={13} />
+                <span>LinkedIn</span>
+              </a>
             </div>
           </div>
         </div>
