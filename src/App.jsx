@@ -313,9 +313,9 @@ export default function App() {
               <span className="text-gradient-gold">&amp; Architectural Rigor</span>
             </h1>
 
-            {/* Factual Subtitle */}
+            {/* Creative Pitch Subtitle */}
             <p className="hero-anim-item hero-subtitle">
-              Founded by <strong>Chandan Mahapatra</strong> and <strong>S Akash Dora</strong> in Odisha, True Inspire designs and builds dependable web applications, edge AI systems, and interactive digital experiences.
+              An independent engineering collective translating bold imagination into resilient software—architecting high-performance web platforms, edge intelligence, and bespoke digital experiences.
             </p>
 
             {/* Action Group */}
