@@ -1,8 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-export default function ThreeCanvas() {
+export default function ThreeCanvas({ theme = 'dark' }) {
   const canvasRef = useRef(null);
+  const themeRef = useRef(theme);
+  const lightingRef = useRef(null);
+
+  // Keep themeRef updated
+  useEffect(() => {
+    themeRef.current = theme;
+    if (lightingRef.current) {
+      lightingRef.current.updateTheme(theme);
+    }
+  }, [theme]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -38,17 +48,17 @@ export default function ThreeCanvas() {
     const ambientLight = new THREE.AmbientLight(0x181c26, 1.2);
     scene.add(ambientLight);
 
-    // Key Light - Warm Champagne Gold
+    // Key Light
     const keyLight = new THREE.DirectionalLight(0xfff1cf, 3.2);
     keyLight.position.set(4, 5, 4);
     scene.add(keyLight);
 
-    // Rim Light - Cool Slate / Cyan highlight for edge separation
+    // Rim Light
     const rimLight = new THREE.DirectionalLight(0x70a5f5, 1.8);
     rimLight.position.set(-5, -4, -3);
     scene.add(rimLight);
 
-    // Point Light - Specular glint on golden diamond facets
+    // Point Light - Specular glint on diamond facets
     const pointLight = new THREE.PointLight(0xd4af37, 2.5, 10);
     pointLight.position.set(0, 1.5, 2);
     scene.add(pointLight);
@@ -57,25 +67,31 @@ export default function ThreeCanvas() {
     const emblemGroup = new THREE.Group();
     scene.add(emblemGroup);
 
-    // Primary Diamond Star Material (Polished Champagne Gold)
-    const goldMaterial = new THREE.MeshStandardMaterial({
+    // Primary Diamond Star Material (Polished Champagne Gold in Dark, Amethyst-Gold in Light)
+    const starMaterial = new THREE.MeshStandardMaterial({
       color: 0xdfb75c,
       metalness: 0.92,
       roughness: 0.18,
       envMapIntensity: 1.5
     });
 
-    // Dark Obsidian Accent Material (Mirroring the logo's right wing)
-    const obsidianMaterial = new THREE.MeshStandardMaterial({
+    // Dark Obsidian / Deep Violet Accent Material (Mirroring the logo's right wing)
+    const wingAccentMaterial = new THREE.MeshStandardMaterial({
       color: 0x14161d,
       metalness: 0.85,
       roughness: 0.25
     });
 
+    const ring1Material = new THREE.MeshStandardMaterial({
+      color: 0xdfb75c,
+      metalness: 0.90,
+      roughness: 0.20
+    });
+
     // A. The Apex Diamond Star (Faceted Double Pyramid)
     const starGeom = new THREE.OctahedronGeometry(0.85, 0);
     starGeom.scale(0.8, 1.45, 0.8);
-    const starMesh = new THREE.Mesh(starGeom, goldMaterial);
+    const starMesh = new THREE.Mesh(starGeom, starMaterial);
     starMesh.position.set(0, 0.45, 0);
     emblemGroup.add(starMesh);
 
@@ -91,13 +107,13 @@ export default function ThreeCanvas() {
 
     // C. The Winged Orbital Rings (Kinetic Gyroscope curves)
     const ring1Geom = new THREE.TorusGeometry(1.65, 0.032, 24, 100);
-    const ring1Mesh = new THREE.Mesh(ring1Geom, goldMaterial);
+    const ring1Mesh = new THREE.Mesh(ring1Geom, ring1Material);
     ring1Mesh.rotation.x = Math.PI / 3;
     ring1Mesh.rotation.y = Math.PI / 6;
     emblemGroup.add(ring1Mesh);
 
     const ring2Geom = new THREE.TorusGeometry(2.1, 0.024, 24, 100);
-    const ring2Mesh = new THREE.Mesh(ring2Geom, obsidianMaterial);
+    const ring2Mesh = new THREE.Mesh(ring2Geom, wingAccentMaterial);
     ring2Mesh.rotation.x = -Math.PI / 4;
     ring2Mesh.rotation.y = Math.PI / 3;
     emblemGroup.add(ring2Mesh);
@@ -113,7 +129,7 @@ export default function ThreeCanvas() {
     ring3Mesh.rotation.x = Math.PI / 2.2;
     emblemGroup.add(ring3Mesh);
 
-    // 5. Ambient Stardust Particle Field (400 points)
+    // 5. Ambient Stardust Particle Field (420 points)
     const particleCount = 420;
     const particlePositions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i++) {
@@ -137,6 +153,56 @@ export default function ThreeCanvas() {
     });
     const particleSystem = new THREE.Points(particleGeom, particleMat);
     scene.add(particleSystem);
+
+    // Method to dynamically adapt WebGL scene to active theme
+    const applyThemeToScene = (t) => {
+      const isLight = t === 'light';
+      if (isLight) {
+        ambientLight.color.setHex(0xeae5f5);
+        ambientLight.intensity = 1.4;
+        keyLight.color.setHex(0xffffff);
+        keyLight.intensity = 2.6;
+        rimLight.color.setHex(0xc4b5fd);
+        rimLight.intensity = 1.6;
+        pointLight.color.setHex(0x7c3aed);
+        pointLight.intensity = 2.2;
+
+        starMaterial.color.setHex(0xa855f7);
+        starMaterial.roughness = 0.22;
+        wingAccentMaterial.color.setHex(0x3b1d54);
+        ring1Material.color.setHex(0xd4af37);
+        ring3Mat.color.setHex(0x8b5cf6);
+        coreMat.color.setHex(0x7c3aed);
+        particleMat.color.setHex(0x7c3aed);
+        particleMat.opacity = 0.45;
+      } else {
+        ambientLight.color.setHex(0x181c26);
+        ambientLight.intensity = 1.2;
+        keyLight.color.setHex(0xfff1cf);
+        keyLight.intensity = 3.2;
+        rimLight.color.setHex(0x70a5f5);
+        rimLight.intensity = 1.8;
+        pointLight.color.setHex(0xd4af37);
+        pointLight.intensity = 2.5;
+
+        starMaterial.color.setHex(0xdfb75c);
+        starMaterial.roughness = 0.18;
+        wingAccentMaterial.color.setHex(0x14161d);
+        ring1Material.color.setHex(0xdfb75c);
+        ring3Mat.color.setHex(0xd4af37);
+        coreMat.color.setHex(0xfff4d6);
+        particleMat.color.setHex(0xe5c06e);
+        particleMat.opacity = 0.65;
+      }
+    };
+
+    // Apply initial theme state
+    applyThemeToScene(themeRef.current);
+
+    // Expose update handler
+    lightingRef.current = {
+      updateTheme: (newTheme) => applyThemeToScene(newTheme)
+    };
 
     // 6. Interaction State Tracking (Mouse Parallax & Scroll Choreography)
     let mouseX = 0;
@@ -180,14 +246,6 @@ export default function ThreeCanvas() {
       const maxScroll = Math.max(document.body.scrollHeight - window.innerHeight, 1);
       const scrollProgress = Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
       const scrollY = window.scrollY;
-
-      // Section-specific transitions:
-      // Hero (0 - 400px): Centered, breathing, slightly forward
-      // Services (400 - 1200px): Shifts to right flank, tilts to reveal edge geometry
-      // Work (1200 - 2200px): Glides left flank, deep perspective, soft opacity
-      // About (2200 - 3200px): Re-centers, elevated angle framing philosophy
-      // Team (3200 - 4200px): Orbits smoothly behind founder cards
-      // Contact (> 4200px): Anchors near bottom
 
       if (!prefersReducedMotion) {
         // Continuous Idle Rotations
@@ -280,11 +338,13 @@ export default function ThreeCanvas() {
       cancelAnimationFrame(animId);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
+      lightingRef.current = null;
 
       // Dispose Three.js resources
       starGeom.dispose();
-      goldMaterial.dispose();
-      obsidianMaterial.dispose();
+      starMaterial.dispose();
+      wingAccentMaterial.dispose();
+      ring1Material.dispose();
       coreGeom.dispose();
       coreMat.dispose();
       ring1Geom.dispose();

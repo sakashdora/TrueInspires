@@ -23,11 +23,24 @@ import {
   CheckCircle2, 
   Terminal, 
   Compass, 
-  ChevronRight,
+  Sun, 
+  Moon,
   Workflow
 } from 'lucide-react';
 
 export default function App() {
+  // Dual-Theme State with Local Persistence and System Preference Detection
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('to-inspire-theme');
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        return savedTheme;
+      }
+      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    return 'dark';
+  });
+
   // Navigation & UI States
   const [activeNav, setActiveNav] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
@@ -36,17 +49,28 @@ export default function App() {
   // Modal & Toast States
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState('project');
-  const [selectedProjectType, setSelectedProjectType] = useState('Web & App Development');
+  const [selectedProjectType, setSelectedProjectType] = useState('Edge AI & Vision');
   const [showToast, setShowToast] = useState(false);
 
   // Projects Filter State
-  const [selectedCategory, setSelectedCategory] = useState('All Projects');
+  const [selectedCategory, setSelectedCategory] = useState('All Platforms');
 
   // Team Active Index
   const [activeTeamIndex, setActiveTeamIndex] = useState(0);
 
   // Refs for animations
   const heroContentRef = useRef(null);
+
+  // Sync theme to document element and localStorage
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('to-inspire-theme', theme);
+  }, [theme]);
+
+  // Toggle Theme Handler
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   // Scroll detection for sticky navbar & active section indicator
   useEffect(() => {
@@ -82,9 +106,9 @@ export default function App() {
           y: 0, 
           opacity: 1, 
           duration: 1.1, 
-          stagger: 0.15, 
+          stagger: 0.14, 
           ease: 'power3.out',
-          delay: 0.2
+          delay: 0.15
         }
       );
     }, heroContentRef);
@@ -94,7 +118,7 @@ export default function App() {
 
   // Team carousel navigation
   const handleTeamNav = (dir) => {
-    setActiveTeamIndex((prev) => (dir === 'next' ? (prev === 0 ? 1 : 0) : (prev === 1 ? 0 : 1)));
+    setActiveTeamIndex(prev => (dir === 'next' ? (prev === 0 ? 1 : 0) : (prev === 1 ? 0 : 1)));
   };
 
   // Contact form submission
@@ -106,14 +130,14 @@ export default function App() {
   };
 
   // Filter projects by category
-  const filteredProjects = selectedCategory === 'All Projects'
+  const filteredProjects = selectedCategory === 'All Platforms'
     ? projects
-    : projects.filter((p) => p.category === selectedCategory);
+    : projects.filter(p => p.category === selectedCategory);
 
   return (
     <div className="app-root">
-      {/* Interactive 3D WebGL Canvas Layer */}
-      <ThreeCanvas />
+      {/* Interactive 3D WebGL Canvas Layer (Reacts to Dual Themes) */}
+      <ThreeCanvas theme={theme} />
 
       {/* Atmospheric Background Mesh Glows */}
       <div className="ambient-mesh-layer" aria-hidden="true">
@@ -122,10 +146,10 @@ export default function App() {
         <div className="glow-sphere glow-3"></div>
       </div>
 
-      {/* STICKY HEADER & NAVBAR */}
+      {/* STICKY FLOATING HEADER & NAVBAR */}
       <header className={`navbar-wrapper ${isScrolled ? 'scrolled' : ''}`} id="navbar">
         <div className="nav-container">
-          {/* Authentic Brand Lockup with Real Logo Asset */}
+          {/* Authentic Brand Lockup with Real Master Logo Asset */}
           <a href="#home" className="brand-logo" aria-label="To Inspire Home">
             <div className="brand-logo-frame">
               <img 
@@ -154,7 +178,7 @@ export default function App() {
               className={`nav-link ${activeNav === 'services' ? 'active' : ''}`} 
               onClick={() => setMobileMenuOpen(false)}
             >
-              Services
+              Capabilities
             </a>
             <a 
               href="#work" 
@@ -168,7 +192,7 @@ export default function App() {
               className={`nav-link ${activeNav === 'about' ? 'active' : ''}`} 
               onClick={() => setMobileMenuOpen(false)}
             >
-              Philosophy
+              Creed
             </a>
             <a 
               href="#team" 
@@ -186,10 +210,30 @@ export default function App() {
             </a>
           </nav>
 
-          {/* Nav Actions */}
+          {/* Nav Actions: Theme Toggle & CTA */}
           <div className="nav-actions">
+            {/* Tactile Dual-Theme Switcher Button */}
             <button 
-              className="btn btn-gold nav-cta" 
+              className="theme-switch-btn" 
+              onClick={toggleTheme}
+              aria-label={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} theme`}
+              title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} theme`}
+            >
+              {theme === 'dark' ? (
+                <>
+                  <Sun size={15} className="switch-icon-active" />
+                  <span className="switch-label">Light</span>
+                </>
+              ) : (
+                <>
+                  <Moon size={15} className="switch-icon-active" />
+                  <span className="switch-label">Dark</span>
+                </>
+              )}
+            </button>
+
+            <button 
+              className="btn btn-brand nav-cta" 
               onClick={() => { setIsModalOpen(true); setModalType('project'); }}
             >
               <span>Build Together</span>
@@ -209,173 +253,177 @@ export default function App() {
       </header>
 
       <main className="main-content">
-        {/* HERO SECTION */}
+        {/* HERO SECTION (THE ENGINEERING PROCLAMATION) */}
         <section className="hero-section" id="home" ref={heroContentRef}>
           <div className="hero-container">
             {/* Top Eyebrow Badge Pill */}
             <div className="hero-anim-item badge-pill hero-badge">
               <Sparkles className="sparkle-icon" size={13} />
-              <span className="badge-text-gold">Creative Engineering Studio</span>
+              <span>Autonomous Engineering Studio</span>
               <span className="badge-divider">&bull;</span>
               <span className="badge-sanskrit-accent">यथा कल्पना तथा रचना</span>
             </div>
 
-            {/* Main Editorial Headline */}
+            {/* Main Editorial Headline (Anti-Generic Copy) */}
             <h1 className="hero-anim-item hero-title">
-              Where Bold Imagination<br />
-              <span className="text-gradient-gold">Meets Precision Engineering</span>
+              Software Engineered with Deliberate Craft<br />
+              <span className="text-gradient-gold">&amp; Architectural Rigor</span>
             </h1>
 
-            {/* Editorial Subtitle */}
+            {/* Factual Subtitle */}
             <p className="hero-anim-item hero-subtitle">
-              At <strong>To Inspire</strong>, we design, develop, and deliver bespoke digital platforms, scalable software architectures, and immersive interactive web experiences that solve genuine problems.
+              Founded by <strong>Chandan Mahapatra</strong> and <strong>S Akash Dora</strong> in Odisha, To Inspire architects bespoke web applications, edge AI surveillance systems, and high-throughput financial telemetry platforms.
             </p>
 
             {/* Action Group */}
             <div className="hero-anim-item hero-cta-group">
-              <a href="#work" className="btn btn-gold">
-                <span>Explore Engineering</span>
+              <a href="#work" className="btn btn-brand">
+                <span>Review Engineering Capabilities</span>
                 <ArrowRight className="icon-arrow" size={16} />
               </a>
               <button 
                 className="btn btn-glass" 
-                onClick={() => { setIsModalOpen(true); setModalType('project'); }}
+                onClick={() => { setIsModalOpen(true); setModalType('consult'); }}
               >
-                <span>Initiate Consultation</span>
+                <span>Direct Founder Consultation</span>
                 <span className="btn-beacon-dot"></span>
               </button>
             </div>
 
-            {/* Live Engineering Telemetry Strip */}
+            {/* Live Verified Studio Telemetry Strip */}
             <div className="hero-anim-item hero-telemetry-strip">
               <div className="telemetry-item">
                 <span className="telemetry-label">Architecture</span>
-                <strong className="telemetry-value">WebGL &bull; React &bull; Vite</strong>
+                <strong className="telemetry-value">WebGL &bull; React 18 &bull; Vite</strong>
               </div>
               <div className="telemetry-divider"></div>
               <div className="telemetry-item">
                 <span className="telemetry-label">Studio Origin</span>
-                <strong className="telemetry-value">Bhubaneswar, Odisha</strong>
+                <strong className="telemetry-value">Bhubaneswar &amp; Jeypore, Odisha</strong>
               </div>
               <div className="telemetry-divider"></div>
               <div className="telemetry-item">
                 <span className="telemetry-label">Status</span>
                 <strong className="telemetry-value text-emerald">
                   <span className="live-indicator-pulse"></span>
-                  Accepting Q4 / Q1 Projects
+                  Live &bull; Accepting Q4 Engagements
                 </strong>
               </div>
               <div className="telemetry-divider"></div>
               <div className="telemetry-item">
-                <span className="telemetry-label">Verified Deliverables</span>
-                <strong className="telemetry-value">5 Production Platforms</strong>
+                <span className="telemetry-label">Verified Platforms</span>
+                <strong className="telemetry-value">6 Production Codebases</strong>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION: SERVICES / WHAT WE DO */}
+        {/* SECTION: FOUR PILLARS OF STUDIO ENGINEERING (#services) */}
         <section className="section services-section" id="services">
           <div className="container">
             <div className="section-head-dual">
               <div>
                 <div className="badge-pill">Capabilities</div>
                 <h2 className="section-heading">
-                  Engineered for Impact.<br />
-                  <span className="text-gradient-gold">Constructed for Longevity.</span>
+                  Four Pillars of<br />
+                  <span className="text-gradient-gold">Studio Engineering</span>
                 </h2>
               </div>
               <p className="section-lead-paragraph">
-                From zero-to-one product development to advanced 3D interactive web applications, we combine architectural discipline with deliberate art direction.
+                From zero-latency edge computer vision to high-throughput financial analytics, we build resilient, beautiful software that solves verifiable operational problems.
               </p>
             </div>
 
             <div className="services-grid">
-              {/* Service Card 1 */}
+              {/* Pillar 1 */}
               <div className="service-card glass-panel">
                 <div className="service-icon-box">
-                  <Monitor size={22} className="service-icon" />
+                  <Monitor size={22} />
                 </div>
                 <div className="service-meta">01 / ARCHITECTURE</div>
-                <h3 className="service-title">Web & App Engineering</h3>
+                <h3 className="service-title">Full-Stack Web &amp; Cloud Platforms</h3>
                 <p className="service-text">
-                  Bespoke, high-throughput web applications crafted with React, modern state architectures, clean APIs, and fluid performance across all viewports.
+                  High-throughput React and Next.js architectures, relational database schemas, and zero-downtime serverless pipelines built for longevity and speed.
                 </p>
                 <div className="service-tags">
-                  <span className="service-tag">Next.js & Vite</span>
-                  <span className="service-tag">Cloud Native</span>
-                  <span className="service-tag">Responsive</span>
+                  <span className="service-tag">Next.js &amp; Vite</span>
+                  <span className="service-tag">PostgreSQL</span>
+                  <span className="service-tag">Supabase</span>
+                  <span className="service-tag">Cloud-Native</span>
                 </div>
               </div>
 
-              {/* Service Card 2 */}
+              {/* Pillar 2 */}
               <div className="service-card glass-panel">
                 <div className="service-icon-box">
-                  <Cpu size={22} className="service-icon" />
+                  <Cpu size={22} />
                 </div>
-                <div className="service-meta">02 / INTELLIGENCE</div>
-                <h3 className="service-title">AI & Smart Automation</h3>
+                <div className="service-meta">02 / VISION &amp; AI</div>
+                <h3 className="service-title">Edge Computer Vision &amp; AI Systems</h3>
                 <p className="service-text">
-                  Purposeful AI integrations and automated workflows designed to accelerate business decisions without superficial gimmickry or hallucinations.
+                  Edge-native ONNX and OpenVINO inference engines for sub-second industrial hazard detection, sensor triage, and behavioral LLM assistant pipelines.
                 </p>
                 <div className="service-tags">
-                  <span className="service-tag">Custom Agents</span>
-                  <span className="service-tag">LLM Orchestration</span>
-                  <span className="service-tag">Automated Pipelines</span>
+                  <span className="service-tag">YOLOv11s ONNX</span>
+                  <span className="service-tag">OpenVINO</span>
+                  <span className="service-tag">NestJS WS</span>
+                  <span className="service-tag">Offline LAN</span>
                 </div>
               </div>
 
-              {/* Service Card 3 */}
+              {/* Pillar 3 */}
               <div className="service-card glass-panel">
                 <div className="service-icon-box">
-                  <Palette size={22} className="service-icon" />
+                  <Palette size={22} />
                 </div>
-                <div className="service-meta">03 / DIRECTION</div>
-                <h3 className="service-title">UI/UX & Creative Direction</h3>
+                <div className="service-meta">03 / ART DIRECTION</div>
+                <h3 className="service-title">Dual-Theme Art Direction &amp; Systems</h3>
                 <p className="service-text">
-                  Distinguished visual systems, tailored typography hierarchies, and tactile micro-interactions that leave a memorable, professional impression.
+                  Bespoke typography hierarchies, real-time WebGL 3D choreography, and micro-interactions calibrated for WCAG 2.1 AA contrast and zero cognitive fatigue.
                 </p>
                 <div className="service-tags">
-                  <span className="service-tag">Editorial Systems</span>
-                  <span className="service-tag">Interactive 3D</span>
-                  <span className="service-tag">Design Systems</span>
+                  <span className="service-tag">Three.js WebGL</span>
+                  <span className="service-tag">Editorial Type</span>
+                  <span className="service-tag">Tactile UI</span>
+                  <span className="service-tag">Dual Themes</span>
                 </div>
               </div>
 
-              {/* Service Card 4 */}
+              {/* Pillar 4 */}
               <div className="service-card glass-panel">
                 <div className="service-icon-box">
-                  <Workflow size={22} className="service-icon" />
+                  <Workflow size={22} />
                 </div>
-                <div className="service-meta">04 / STRATEGY</div>
-                <h3 className="service-title">Consulting & Deployment</h3>
+                <div className="service-meta">04 / RELIABILITY</div>
+                <h3 className="service-title">Architecture Audits &amp; DevOps</h3>
                 <p className="service-text">
-                  Comprehensive code audits, performance tuning, secure deployment pipelines, and proactive technical leadership for growing businesses.
+                  Comprehensive code integrity analysis, anti-inspection security shielding, Vercel/AWS infrastructure hardening, and real-time performance telemetry.
                 </p>
                 <div className="service-tags">
-                  <span className="service-tag">Vercel & AWS</span>
-                  <span className="service-tag">Audit & Security</span>
-                  <span className="service-tag">DevOps CI/CD</span>
+                  <span className="service-tag">Security Shield</span>
+                  <span className="service-tag">Vercel &amp; AWS</span>
+                  <span className="service-tag">CI/CD Hardening</span>
+                  <span className="service-tag">60 FPS Tuning</span>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION: FEATURED ENGINEERING / OUR WORK */}
+        {/* SECTION: VERIFIED PRODUCTION SHOWCASE (#work) */}
         <section className="section projects-section" id="work">
           <div className="container">
             <div className="section-head-center">
-              <div className="badge-pill">Production Portfolio</div>
+              <div className="badge-pill">Verified Showcase</div>
               <h2 className="section-heading text-center">
-                Crafted with Rigor.<br />
-                <span className="text-gradient-gold">Proven in Real Production.</span>
+                Real Software.<br />
+                <span className="text-gradient-gold">Proven in Production.</span>
               </h2>
               <p className="section-description text-center">
-                Explore authentic digital platforms and applications built, deployed, and maintained by the To Inspire engineering team.
+                Six verified platforms engineered, deployed, and maintained by the To Inspire collective.
               </p>
 
-              {/* Category Filter Bar */}
+              {/* Category Filter Tabs */}
               <div className="projects-filter-bar">
                 {projectCategories.map((cat) => (
                   <button 
@@ -417,7 +465,7 @@ export default function App() {
                         target="_blank" 
                         rel="noopener noreferrer" 
                         className="project-btn primary"
-                        title="View Live Web Application"
+                        title="View Live Web Application or Demo"
                       >
                         <span>Launch App</span>
                         <ExternalLink size={14} />
@@ -427,7 +475,7 @@ export default function App() {
                         target="_blank" 
                         rel="noopener noreferrer" 
                         className="project-btn secondary"
-                        title="View Source Code Repository"
+                        title="Inspect Source Code Repository"
                       >
                         <Github size={14} />
                         <span>Source</span>
@@ -440,19 +488,19 @@ export default function App() {
           </div>
         </section>
 
-        {/* SECTION: PHILOSOPHY & ABOUT */}
+        {/* SECTION: THE CREED & STUDIO PHILOSOPHY (#about) */}
         <section className="section about-section" id="about">
           <div className="container">
             <div className="about-grid">
               <div className="about-narrative">
-                <div className="badge-pill">Our Philosophy</div>
+                <div className="badge-pill">Our Creed</div>
                 <h2 className="section-heading">
                   Rooted in Conviction.<br />
                   <span className="text-gradient-gold">Driven by Craftsmanship.</span>
                 </h2>
                 
                 <p className="about-lead">
-                  True engineering is not about chasing fleeting design fads or assembling generic templates. It is the deliberate art of transforming clear ideas into resilient, beautiful software that endures.
+                  True engineering is not about assembling generic templates or chasing fleeting design fads. It is the deliberate art of transforming clear ideas into resilient, beautiful software that endures.
                 </p>
 
                 <div className="philosophy-points">
@@ -472,7 +520,7 @@ export default function App() {
                     </div>
                     <div>
                       <h4 className="point-title">Architectural Precision</h4>
-                      <p className="point-text">Clean modular systems, rigorous accessibility compliance, and silky 60fps WebGL execution across desktop and mobile.</p>
+                      <p className="point-text">Clean modular systems, strict WCAG AA contrast compliance, and silky 60fps WebGL execution across desktop and mobile.</p>
                     </div>
                   </div>
 
@@ -482,13 +530,13 @@ export default function App() {
                     </div>
                     <div>
                       <h4 className="point-title">Founder Accountability</h4>
-                      <p className="point-text">Every line of code and design decision is personally overseen and delivered by our founding engineers.</p>
+                      <p className="point-text">Every line of code and architectural design is personally overseen and delivered by our founding engineers.</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* The Motto Shrine Card */}
+              {/* The Creed Shrine Card */}
               <div className="about-quote-card glass-panel">
                 <div className="quote-star-monogram">
                   <span className="star-glyph">✦</span>
@@ -512,12 +560,12 @@ export default function App() {
           </div>
         </section>
 
-        {/* SECTION: FOUNDERS & TEAM */}
+        {/* SECTION: DIRECT TECHNICAL LEADERSHIP (#team) */}
         <section className="section team-section" id="team">
           <div className="container">
             <div className="section-head-dual">
               <div>
-                <div className="badge-pill">Leadership</div>
+                <div className="badge-pill">Founders</div>
                 <h2 className="section-heading">
                   The Engineers Behind<br />
                   <span className="text-gradient-gold">To Inspire</span>
@@ -554,9 +602,6 @@ export default function App() {
                 >
                   <div className="team-photo-frame">
                     <img src={member.photo} alt={member.name} className="team-photo" />
-                    <div className="team-badge-overlay">
-                      <span className="team-role-pill">{member.role}</span>
-                    </div>
                   </div>
 
                   <div className="team-content">
@@ -584,6 +629,7 @@ export default function App() {
                       </div>
                     </div>
 
+                    <span className="team-role-label">{member.role}</span>
                     <p className="team-bio">{member.bio}</p>
 
                     <div className="team-tags">
@@ -598,7 +644,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* SECTION: CTA INITIATE BANNER */}
+        {/* SECTION: CTA INITIATE MONOLITH (#contact) */}
         <section className="section cta-section" id="contact">
           <div className="container">
             <div className="cta-monolith glass-panel">
@@ -613,7 +659,7 @@ export default function App() {
                 </p>
                 <div className="cta-actions-row">
                   <button 
-                    className="btn btn-gold" 
+                    className="btn btn-brand" 
                     onClick={() => { setIsModalOpen(true); setModalType('project'); }}
                   >
                     <span>Start a Project</span>
@@ -621,9 +667,9 @@ export default function App() {
                   </button>
                   <button 
                     className="btn btn-glass" 
-                    onClick={() => { setIsModalOpen(true); setModalType('contact'); }}
+                    onClick={() => { setIsModalOpen(true); setModalType('consult'); }}
                   >
-                    <span>Send Direct Message</span>
+                    <span>Direct Inquiry</span>
                   </button>
                 </div>
               </div>
@@ -655,7 +701,7 @@ export default function App() {
               </p>
               <div className="footer-origin-badge">
                 <span className="badge-dot"></span>
-                <span>As Conceived, So Created &bull; V3.0</span>
+                <span>As Conceived, So Created &bull; V4.0</span>
               </div>
             </div>
 
@@ -664,29 +710,30 @@ export default function App() {
               <h4 className="footer-col-title">Navigation</h4>
               <ul className="footer-links">
                 <li><a href="#home">Overview</a></li>
-                <li><a href="#services">Services & Architecture</a></li>
-                <li><a href="#work">Production Work</a></li>
-                <li><a href="#about">Studio Philosophy</a></li>
+                <li><a href="#services">Capabilities</a></li>
+                <li><a href="#work">Verified Engineering</a></li>
+                <li><a href="#about">Studio Creed</a></li>
                 <li><a href="#team">Founding Team</a></li>
-                <li><a href="#contact">Initiate Project</a></li>
+                <li><a href="#contact">Initiate Engagement</a></li>
               </ul>
             </div>
 
-            {/* Verified Projects */}
+            {/* Verified Platforms */}
             <div className="footer-nav-col">
               <h4 className="footer-col-title">Live Deliverables</h4>
               <ul className="footer-links">
-                <li><a href="https://doseloop.vercel.app/" target="_blank" rel="noopener noreferrer">DOSELOOP ↗</a></li>
-                <li><a href="https://expense-so.vercel.app/" target="_blank" rel="noopener noreferrer">ExpenseSO ↗</a></li>
-                <li><a href="https://freshers-party-beige.vercel.app/" target="_blank" rel="noopener noreferrer">Freshers Party ↗</a></li>
-                <li><a href="https://cross-fire-three.vercel.app/" target="_blank" rel="noopener noreferrer">CrossFire ↗</a></li>
-                <li><a href="https://teacherinvitation.vercel.app/" target="_blank" rel="noopener noreferrer">Teacher Invitation ↗</a></li>
+                <li><a href="https://github.com/sakashdora/PPE-PROJECT" target="_blank" rel="noopener noreferrer">ARGUS AI (Vision) ↗</a></li>
+                <li><a href="https://github.com/sakashdora/Trade_vault" target="_blank" rel="noopener noreferrer">TradeVault (FinTech) ↗</a></li>
+                <li><a href="https://doseloop.vercel.app/" target="_blank" rel="noopener noreferrer">DoseLoop (Health) ↗</a></li>
+                <li><a href="https://harvest-tax-dashboard.vercel.app/" target="_blank" rel="noopener noreferrer">HarvestIQ (Tax) ↗</a></li>
+                <li><a href="https://cross-fire-three.vercel.app/" target="_blank" rel="noopener noreferrer">CrossFire 2026 ↗</a></li>
+                <li><a href="https://github.com/im-chandanmahapatra/pure-go" target="_blank" rel="noopener noreferrer">PURE GO (Commerce) ↗</a></li>
               </ul>
             </div>
 
-            {/* Founder Links */}
+            {/* Founders & Connect */}
             <div className="footer-nav-col">
-              <h4 className="footer-col-title">Founders & Connect</h4>
+              <h4 className="footer-col-title">Founders &amp; Connect</h4>
               <ul className="footer-links">
                 <li><a href="https://www.linkedin.com/in/chandan-mahapatra/" target="_blank" rel="noopener noreferrer">Chandan Mahapatra (LinkedIn) ↗</a></li>
                 <li><a href="https://github.com/im-chandanmahapatra" target="_blank" rel="noopener noreferrer">Chandan (GitHub) ↗</a></li>
@@ -702,13 +749,13 @@ export default function App() {
             <div className="footer-legal-links">
               <span>यथा कल्पना तथा रचना</span>
               <span className="dot-sep">&bull;</span>
-              <span>TrueInspires V3.0</span>
+              <span>TrueInspires V4.0</span>
             </div>
           </div>
         </div>
       </footer>
 
-      {/* ENGAGEMENT & CONTACT MODAL */}
+      {/* ENGAGEMENT & CONSULTATION MODAL */}
       {isModalOpen && (
         <div className="modal-backdrop" onClick={() => setIsModalOpen(false)}>
           <div 
@@ -720,10 +767,10 @@ export default function App() {
             <div className="modal-header">
               <div>
                 <span className="modal-eyebrow">
-                  {modalType === 'project' ? 'Initiate Project' : 'Direct Conversation'}
+                  {modalType === 'project' ? 'Initiate Project Proposal' : 'Direct Founder Consultation'}
                 </span>
                 <h3 className="modal-title">
-                  {modalType === 'project' ? 'Let’s Build Something Meaningful' : 'Connect with the Founders'}
+                  {modalType === 'project' ? 'Let’s Build Something Distinctive' : 'Direct Access to Founding Engineers'}
                 </h3>
               </div>
               <button 
@@ -740,7 +787,7 @@ export default function App() {
                 <div className="form-group">
                   <label className="form-label">Project Domain</label>
                   <div className="project-type-pills">
-                    {['Web & App Development', 'AI & Automation', 'UI/UX Design', 'Architecture Consulting'].map((type) => (
+                    {['Edge AI & Vision', 'FinTech & Analytics', 'Digital Health', 'Cloud Platforms', 'Event Operations'].map((type) => (
                       <button
                         type="button"
                         key={type}
@@ -778,12 +825,12 @@ export default function App() {
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="clientMsg">Project Details & Objectives</label>
+                <label className="form-label" htmlFor="clientMsg">Project Details &amp; Objectives</label>
                 <textarea 
                   id="clientMsg" 
                   rows={4} 
                   className="form-input textarea" 
-                  placeholder="Tell us about your objectives, timeline, or scope..." 
+                  placeholder="Outline your product vision, technical scope, or architecture timeline..." 
                   required
                 ></textarea>
               </div>
@@ -792,8 +839,8 @@ export default function App() {
                 <button type="button" className="btn btn-glass" onClick={() => setIsModalOpen(false)}>
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-gold">
-                  <span>Send Proposal Request</span>
+                <button type="submit" className="btn btn-brand">
+                  <span>Send Direct Proposal</span>
                   <Send size={15} />
                 </button>
               </div>
@@ -809,8 +856,8 @@ export default function App() {
             <CheckCircle2 size={18} />
           </div>
           <div>
-            <div className="toast-title">Message Transmitted</div>
-            <div className="toast-desc">Thank you. The To Inspire founders will respond within 24 hours.</div>
+            <div className="toast-title">Transmission Received</div>
+            <div className="toast-desc">Thank you. Chandan or Akash will respond directly within 24 hours.</div>
           </div>
         </div>
       )}

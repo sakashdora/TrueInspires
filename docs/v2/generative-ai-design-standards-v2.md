@@ -1,7 +1,7 @@
 # GENERATIVE AI DESIGN STANDARDS V2.0
 **Brand**: To Inspire (TrueInspires)  
 **Motto**: "यथा कल्पना तथा रचना" (*As the imagination, so the creation* / *As conceived, so created*)  
-**Version**: 2.0.0 (Creative Engineering Overhaul)  
+**Version**: 2.1.0 (Production Dual-Theme Architecture)  
 **Status**: Active Production Standard  
 **Maintainers**: CTO, Creative Technologist, Senior UI/UX Designer & Performance Engineer  
 
@@ -59,25 +59,26 @@ This standard establishes mandatory, non-negotiable guidelines for engineering d
   - "Revolutionizing synergy across the ecosystem"
 - **Mandated Tone**:
   - Direct, honest, grounded in real deliverables.
-  - Celebrate the team's verified software projects (DOSELOOP, ExpenseSO, Freshers Party, CrossFire, Teacher Invitation).
+  - Celebrate the team's verified software projects (ARGUS AI, TradeVault/RiskRule, DoseLoop, HarvestIQ, CrossFire 2026, PURE GO).
   - Accurate founder representation: Chandan Mahapatra and S Akash Dora.
 
 ---
 
-## 4. Visual Identity & Color System
+## 4. Dual-Theme Semantic Color Systems
 
-The palette directly derives from the physical nuances of the master logo:
+The visual identity operates across two independently art-directed environments:
 
-| Token | Hex Value | Semantic Role |
-| :--- | :--- | :--- |
-| `--color-obsidian-950` | `#08090C` | Deepest atmospheric foundation / dark background |
-| `--color-obsidian-900` | `#0E1015` | Section background & elevated card surface |
-| `--color-obsidian-800` | `#161922` | Card borders, interactive hover states |
-| `--color-gold-champagne`| `#D4AF37` | Primary brand accent, star crest, active indicators |
-| `--color-gold-light`    | `#F3E3B5` | Metallic highlights, gradient stops, illuminated text |
-| `--color-gold-bronze`   | `#8A6D3B` | Deep metallic shadows, architectural hairlines |
-| `--color-alabaster`     | `#FAF8F5` | Primary text on dark surfaces, off-white brand parchment |
-| `--color-muted-steel`   | `#8E95A5` | Secondary captions, metadata, supporting paragraphs |
+### 4.1 Dark Theme ("Atmospheric Espresso & Champagne Gold")
+- **Foundation**: Deep obsidian (`#08080C`) and espresso (`#110F14`).
+- **Primary Accent**: Champagne gold (`#D4AF37`) and illuminated light gold (`#F3E2B3`).
+- **Depth**: Subdued midnight slate blue (`#181C26`, `#70A5F5`).
+- **Atmosphere**: Haute horlogerie and aerospace precision.
+
+### 4.2 Light Theme ("Warm Alabaster, Soft Lavender & Editorial Violet")
+- **Foundation**: Uncoated warm alabaster cotton paper (`#FAF7F2`) and warm parchment (`#F2EDE4`).
+- **Primary Accent**: Royal violet (`#7C3AED`) and soft heather lavender (`#EDE9FE`).
+- **Typography**: Deep midnight plum (`#241528`) for commanding, fatigue-free reading.
+- **Atmosphere**: Independent high-end literary editorial publishing.
 
 ---
 
@@ -86,3 +87,4 @@ The palette directly derives from the physical nuances of the master logo:
 1. **Evidence-Based Code**: All generated code must be directly executable, lint-free, and cross-browser tested.
 2. **Zero Hallucination Policy**: Never invent fake testimonials, fake logos of fortune 500 companies, or nonexistent awards.
 3. **Progressive WebGL Enhancement**: 3D scenes must run smoothly on standard integrated GPUs (60 FPS target), gracefully handle context loss, and provide accessible DOM fallbacks when WebGL is absent.
+4. **Accessible Contrast Ratios**: All foreground/background color combinations must satisfy WCAG 2.1 AA standards (contrast ≥ 4.5:1 for body copy).
