@@ -132,7 +132,7 @@ The website operates across four distinct visual and interactive strata:
 - **Content**:
   - Headline: *"Let's Discuss Your Project"*
   - Narrative: Connect with the To Inspire team to explore new applications, digital experiences, and technical collaborations.
-  - Direct Actions: `"Send a Message"` & direct email link `myselfazure@gmail.com`.
+  - Direct Actions: `"Let’s talk"` opens the founders’ existing LinkedIn profiles for contact.
 
 ---
 
