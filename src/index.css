@@ -639,6 +639,7 @@ h2 {
   width: 38px;
   height: 38px;
   object-fit: cover;
+  object-position: center 20%;
   border-radius: 50%;
   border: 2px solid var(--bg);
   margin-left: -7px;
@@ -1221,7 +1222,7 @@ h2 {
   background: var(--raised);
   box-shadow: 0 0 0 5px var(--accent-glow), 0 12px 30px var(--shadow);
 }
-.founder-photo img { width: 100%; height: 100%; aspect-ratio: 1; object-fit: contain; border-radius: 50%; }
+.founder-photo img { width: 100%; height: 100%; aspect-ratio: 1; object-fit: cover; object-position: center 20%; border-radius: 50%; }
 .founder-info { min-width: 0; }
 .founder h3 { font-size: 20px; font-weight: 700; letter-spacing: -.035em; line-height: 1.4; }
 .founder-role { color: var(--muted); font-size: 12px; margin-top: 5px; line-height: 1.6; }
@@ -1438,7 +1439,7 @@ h2 {
 }
 .contact-person:hover { border-color: rgba(212,175,55,0.45); transform: translateY(-2px); }
 :root[data-theme='light'] .contact-person:hover { border-color: rgba(108,63,121,0.45); }
-.contact-person img { width: 64px; height: 64px; object-fit: contain; border-radius: 50%; background: var(--raised); }
+.contact-person img { width: 64px; height: 64px; object-fit: cover; object-position: center 20%; border-radius: 50%; background: var(--raised); }
 .contact-person strong { font-size: 15px; font-weight: 600; }
 .contact-person small { display: block; font-size: 11px; color: var(--muted); margin-top: 5px; }
 .contact-person-link { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; color: var(--accent); margin-top: 10px; }
