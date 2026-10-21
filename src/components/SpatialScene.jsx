@@ -45,10 +45,10 @@ export default function SpatialScene({ theme, paused }) {
       room.dispose();
       pmrem.dispose();
 
-      const ambient = new THREE.AmbientLight(0xbedaff, 2.5);
-      const key = new THREE.DirectionalLight(0xffffff, 2.8);
+      const ambient = new THREE.AmbientLight(0xffeed6, 1.6);
+      const key = new THREE.DirectionalLight(0xfff8ee, 2.8);
       key.position.set(-3, 5, 7);
-      const blue = new THREE.DirectionalLight(0x1677ff, 4);
+      const blue = new THREE.DirectionalLight(0xd4af37, 2.2);
       blue.position.set(4, -2, 4);
       scene.add(ambient, key, blue);
       const rig = new THREE.Group();
@@ -56,8 +56,13 @@ export default function SpatialScene({ theme, paused }) {
 
       const emblem = new THREE.Group();
       const logoMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+          baseColor: { value: new THREE.Color(0xd4af37) },
+          deepColor: { value: new THREE.Color(0x8c6124) },
+          glintColor: { value: new THREE.Color(0xfff4d6) },
+        },
         vertexShader: 'varying vec3 vNormal; varying vec3 vView; varying vec3 vLocal; void main(){ vec4 p = modelViewMatrix * vec4(position,1.); vNormal = normalize(normalMatrix * normal); vView = normalize(-p.xyz); vLocal = position; gl_Position = projectionMatrix * p; }',
-        fragmentShader: 'varying vec3 vNormal; varying vec3 vView; varying vec3 vLocal; void main(){ float y = clamp((vLocal.y + 100.) / 200.,0.,1.); vec3 blue = mix(vec3(.025,.64,1.),vec3(.015,.17,.8),y); float edge = pow(1. - abs(dot(normalize(vNormal),normalize(vView))),1.6); float glint = pow(max(0.,1. - abs(vLocal.x * .006 + vLocal.y * .004 + .2)),14.); blue += vec3(.12,.24,.3) * glint; blue = mix(blue,vec3(.62,.9,1.),edge * .9); gl_FragColor = vec4(blue,1.); }',
+        fragmentShader: 'uniform vec3 baseColor; uniform vec3 deepColor; uniform vec3 glintColor; varying vec3 vNormal; varying vec3 vView; varying vec3 vLocal; void main(){ float y = clamp((vLocal.y + 100.) / 200.,0.,1.); vec3 col = mix(baseColor, deepColor, y); float edge = pow(1. - abs(dot(normalize(vNormal),normalize(vView))),1.6); float glint = pow(max(0.,1. - abs(vLocal.x * .006 + vLocal.y * .004 + .2)),14.); col += glintColor * (glint * 0.45); col = mix(col, glintColor, edge * 0.55); gl_FragColor = vec4(col,1.); }',
       });
       const svg = `<svg xmlns="http://www.w3.org/2000/svg">${brandPaths.map(d => `<path d="${d}"/>`).join('')}</svg>`;
       const vector = new SVGLoader().parse(svg);
@@ -74,25 +79,24 @@ export default function SpatialScene({ theme, paused }) {
       emblem.rotation.y = -0.08;
       rig.add(emblem);
 
-      // A clear optical lens, not a raster picture of a sphere. Environment
-      // reflections, transmission, and a Fresnel edge give it physical depth.
-      const glassMaterial = new THREE.MeshPhysicalMaterial({ color: 0xa3d1ff, metalness: 0.08, roughness: 0.045, transmission: 0.94, thickness: 0.25, ior: 1.16, transparent: true, opacity: 0.3, clearcoat: 1, envMapIntensity: 2.2, depthWrite: false });
+      // A clear optical lens with champagne refraction and Fresnel edge
+      const glassMaterial = new THREE.MeshPhysicalMaterial({ color: 0xfff4db, metalness: 0.10, roughness: 0.045, transmission: 0.94, thickness: 0.28, ior: 1.18, transparent: true, opacity: 0.3, clearcoat: 1, envMapIntensity: 2.2, depthWrite: false });
       const lens = new THREE.Mesh(new THREE.SphereGeometry(1.32, 64, 40), glassMaterial);
       lens.scale.z = 0.58;
       lens.position.z = 0.7;
       rig.add(lens);
 
       const rimMaterial = new THREE.ShaderMaterial({
-        uniforms: { tint: { value: new THREE.Color(0x4c9fff) }, strength: { value: 0.6 } },
+        uniforms: { tint: { value: new THREE.Color(0xd4af37) }, strength: { value: 0.65 } },
         vertexShader: 'varying vec3 vNormal; varying vec3 vView; void main(){ vec4 p = modelViewMatrix * vec4(position,1.); vNormal = normalize(normalMatrix * normal); vView = normalize(-p.xyz); gl_Position = projectionMatrix * p; }',
-        fragmentShader: 'uniform vec3 tint; uniform float strength; varying vec3 vNormal; varying vec3 vView; void main(){ vec3 n = normalize(vNormal); float rim = pow(1. - abs(dot(n,normalize(vView))), 1.6); float glint = pow(max(dot(n,normalize(vec3(-.5,.8,.45))),0.),50.); vec3 color = mix(tint,vec3(.8,.94,1.),glint); gl_FragColor = vec4(color,rim * strength + glint * .65); }',
+        fragmentShader: 'uniform vec3 tint; uniform float strength; varying vec3 vNormal; varying vec3 vView; void main(){ vec3 n = normalize(vNormal); float rim = pow(1. - abs(dot(n,normalize(vView))), 1.6); float glint = pow(max(dot(n,normalize(vec3(-.5,.8,.45))),0.),50.); vec3 color = mix(tint,vec3(.98,.95,.9),glint); gl_FragColor = vec4(color,rim * strength + glint * .65); }',
         transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
       });
       const glow = new THREE.Mesh(new THREE.SphereGeometry(1.35, 64, 40), rimMaterial);
       glow.scale.z = 0.6;
       glow.position.z = 0.7;
       rig.add(glow);
-      const trimMaterial = new THREE.MeshPhysicalMaterial({ color: 0x318eff, metalness: 0.5, roughness: 0.16, emissive: 0x1144cc, emissiveIntensity: 0.15, clearcoat: 1, envMapIntensity: 0.65 });
+      const trimMaterial = new THREE.MeshPhysicalMaterial({ color: 0xd4af37, metalness: 0.85, roughness: 0.18, emissive: 0x402e0a, emissiveIntensity: 0.15, clearcoat: 1, envMapIntensity: 1.2 });
       [1.32, 1.4].forEach((radius, index) => {
         const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, index ? 0.025 : 0.043, 16, 160), trimMaterial);
         ring.position.z = 0.61 - index * 0.1;
@@ -101,15 +105,16 @@ export default function SpatialScene({ theme, paused }) {
       });
       const innerLight = new THREE.Mesh(new THREE.CircleGeometry(1.28, 80), new THREE.ShaderMaterial({
         vertexShader: 'varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }',
-        fragmentShader: 'varying vec2 vUv; void main(){ float r=length(vUv-.5)*2.; float halo=pow(r,3.)*.45; float light=pow(max(0.,1.-length(vUv-vec2(.3,.75))*1.5),3.); gl_FragColor=vec4(.04,.3+light*.2,.95, .06+halo+light*.16); }',
+        fragmentShader: 'varying vec2 vUv; void main(){ float r=length(vUv-.5)*2.; float halo=pow(r,3.)*.45; float light=pow(max(0.,1.-length(vUv-vec2(.3,.75))*1.5),3.); gl_FragColor=vec4(.85,.7,.25, .05+halo*.3+light*.18); }',
         transparent: true, depthWrite: false,
       }));
       innerLight.position.z = 0.25;
       rig.add(innerLight);
 
-      const orbitMaterial = new THREE.MeshBasicMaterial({ color: 0x438eff, transparent: true, opacity: 0.7 });
-      const satelliteMaterial = new THREE.MeshPhysicalMaterial({ color: 0xaad5ff, metalness: 0.65, roughness: 0.15, clearcoat: 1, envMapIntensity: 2 });
-      const cobaltMaterial = new THREE.MeshPhysicalMaterial({ color: 0x0875ff, metalness: 0.5, roughness: 0.12, clearcoat: 1 });
+      const orbitMaterial = new THREE.MeshBasicMaterial({ color: 0xd4af37, transparent: true, opacity: 0.55 });
+      const satelliteMaterial = new THREE.MeshPhysicalMaterial({ color: 0xf3e2b3, metalness: 0.75, roughness: 0.15, clearcoat: 1, envMapIntensity: 2.2 });
+      const cobaltMaterial = new THREE.MeshPhysicalMaterial({ color: 0x3d2c16, metalness: 0.6, roughness: 0.18, clearcoat: 1 });
+      const sapphireAccentMaterial = new THREE.MeshPhysicalMaterial({ color: 0x4f8ef0, metalness: 0.5, roughness: 0.14, clearcoat: 1, emissive: 0x1d3d75, emissiveIntensity: 0.2 });
       const satellites = [];
       for (let index = 0; index < 2; index++) {
         const group = new THREE.Group();
@@ -122,7 +127,8 @@ export default function SpatialScene({ theme, paused }) {
         const curve = new THREE.CatmullRomCurve3(points, true);
         group.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 160, 0.008, 6, true), orbitMaterial));
         for (let node = 0; node < 3; node++) {
-          const orb = new THREE.Mesh(new THREE.SphereGeometry(node === 1 ? 0.12 : 0.08, 24, 16), node === 1 ? satelliteMaterial : cobaltMaterial);
+          const mat = node === 1 ? satelliteMaterial : (node === 2 && index === 0 ? sapphireAccentMaterial : cobaltMaterial);
+          const orb = new THREE.Mesh(new THREE.SphereGeometry(node === 1 ? 0.12 : 0.08, 24, 16), mat);
           group.add(orb);
           satellites.push({ orb, angle: node * 2.15 + index, orbit: index });
         }
@@ -130,7 +136,8 @@ export default function SpatialScene({ theme, paused }) {
         rig.add(group);
       }
       [[-4, 1.1, 0.19], [-3.65, -1.22, 0.23], [3.7, -0.95, 0.22], [4.2, 1.4, 0.09]].forEach(([x, y, size], i) => {
-        const orb = new THREE.Mesh(new THREE.SphereGeometry(size, 24, 16), i % 2 ? cobaltMaterial : satelliteMaterial);
+        const mat = i === 1 ? sapphireAccentMaterial : (i % 2 ? cobaltMaterial : satelliteMaterial);
+        const orb = new THREE.Mesh(new THREE.SphereGeometry(size, 24, 16), mat);
         orb.position.set(x, y, -0.5);
         rig.add(orb);
       });
@@ -182,11 +189,65 @@ export default function SpatialScene({ theme, paused }) {
       };
       const update = () => {
         const isLight = settings.current.theme === 'light';
-        ambient.intensity = isLight ? 1.4 : 0.9;
-        glassMaterial.opacity = isLight ? 0.24 : 0.34;
-        glassMaterial.color.set(isLight ? 0xd1e8ff : 0x91c8ff);
-        orbitMaterial.color.set(isLight ? 0x609dff : 0x3a8fff);
-        rimMaterial.uniforms.strength.value = isLight ? 0.35 : 0.7;
+        if (isLight) {
+          ambient.color.set(0xfff8f0);
+          ambient.intensity = 1.9;
+          key.color.set(0xfffcf7);
+          key.intensity = 2.7;
+          blue.color.set(0x8c436b);
+          blue.intensity = 1.9;
+
+          if (logoMaterial.uniforms) {
+            logoMaterial.uniforms.baseColor.value.set(0x6c3f79);
+            logoMaterial.uniforms.deepColor.value.set(0x29212d);
+            logoMaterial.uniforms.glintColor.value.set(0xfff5e6);
+          }
+
+          glassMaterial.color.set(0xfdf7f2);
+          glassMaterial.opacity = 0.24;
+
+          rimMaterial.uniforms.tint.value.set(0x9b3f60);
+          rimMaterial.uniforms.strength.value = 0.45;
+
+          trimMaterial.color.set(0x8b673c);
+          trimMaterial.emissive.set(0x351f15);
+
+          orbitMaterial.color.set(0x8b673c);
+          orbitMaterial.opacity = 0.50;
+
+          satelliteMaterial.color.set(0xfffbf6);
+          cobaltMaterial.color.set(0x29212d);
+          sapphireAccentMaterial.color.set(0x6c3f79);
+        } else {
+          ambient.color.set(0xffeed6);
+          ambient.intensity = 1.6;
+          key.color.set(0xfff8ee);
+          key.intensity = 2.8;
+          blue.color.set(0xd4af37);
+          blue.intensity = 2.2;
+
+          if (logoMaterial.uniforms) {
+            logoMaterial.uniforms.baseColor.value.set(0xd4af37);
+            logoMaterial.uniforms.deepColor.value.set(0x8c6124);
+            logoMaterial.uniforms.glintColor.value.set(0xfff4d6);
+          }
+
+          glassMaterial.color.set(0xfff4db);
+          glassMaterial.opacity = 0.30;
+
+          rimMaterial.uniforms.tint.value.set(0xd4af37);
+          rimMaterial.uniforms.strength.value = 0.65;
+
+          trimMaterial.color.set(0xd4af37);
+          trimMaterial.emissive.set(0x402e0a);
+
+          orbitMaterial.color.set(0xd4af37);
+          orbitMaterial.opacity = 0.55;
+
+          satelliteMaterial.color.set(0xf3e2b3);
+          cobaltMaterial.color.set(0x3d2c16);
+          sapphireAccentMaterial.color.set(0x4f8ef0);
+        }
         schedule();
       };
       const move = (event) => {

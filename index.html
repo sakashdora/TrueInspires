@@ -3,23 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>True Inspire — Ideas into extraordinary.</title>
+    <title>True Inspire — यथा कल्पना तथा रचना</title>
     <meta name="description" content="An independent software studio in Odisha, founded by Chandan Mahapatra and S Akash Dora. We build web applications, edge AI systems, and considered digital experiences." />
-    <meta name="theme-color" content="#050e23" />
+    <meta name="theme-color" content="#080608" />
     <script>
       (() => {
         let theme;
-        try { theme = localStorage.getItem('to-inspire-theme'); } catch {}
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const qTheme = params.get('theme');
+          if (qTheme === 'light' || qTheme === 'dark') {
+            theme = qTheme;
+            localStorage.setItem('to-inspire-theme', theme);
+          }
+        } catch {}
+        if (!theme) {
+          try { theme = localStorage.getItem('to-inspire-theme'); } catch {}
+        }
         if (theme !== 'light' && theme !== 'dark') {
           theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
         }
         document.documentElement.dataset.theme = theme;
-        document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#050e23' : '#f4f8ff';
+        document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#080608' : '#F7F1E8';
       })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Serif+Devanagari:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />

@@ -158,22 +158,22 @@ export default function ThreeCanvas({ theme = 'dark' }) {
     const applyThemeToScene = (t) => {
       const isLight = t === 'light';
       if (isLight) {
-        ambientLight.color.setHex(0xeae5f5);
-        ambientLight.intensity = 1.4;
-        keyLight.color.setHex(0xffffff);
+        ambientLight.color.setHex(0xf7f1e8);
+        ambientLight.intensity = 1.6;
+        keyLight.color.setHex(0xfffbf6);
         keyLight.intensity = 2.6;
-        rimLight.color.setHex(0xc4b5fd);
+        rimLight.color.setHex(0xece3f5);
         rimLight.intensity = 1.6;
-        pointLight.color.setHex(0x7c3aed);
+        pointLight.color.setHex(0x6c3f79);
         pointLight.intensity = 2.2;
 
-        starMaterial.color.setHex(0xa855f7);
+        starMaterial.color.setHex(0x8b673c);
         starMaterial.roughness = 0.22;
-        wingAccentMaterial.color.setHex(0x3b1d54);
-        ring1Material.color.setHex(0xd4af37);
-        ring3Mat.color.setHex(0x8b5cf6);
-        coreMat.color.setHex(0x7c3aed);
-        particleMat.color.setHex(0x7c3aed);
+        wingAccentMaterial.color.setHex(0x29212d);
+        ring1Material.color.setHex(0x8b673c);
+        ring3Mat.color.setHex(0x9b3f60);
+        coreMat.color.setHex(0x6c3f79);
+        particleMat.color.setHex(0x6c3f79);
         particleMat.opacity = 0.45;
       } else {
         ambientLight.color.setHex(0x181c26);

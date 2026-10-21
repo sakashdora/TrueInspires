@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { ArrowRight, ArrowUpRight, ChevronRight, Code2, Cpu, House, Layers, Mail, Menu, Moon, Pause, Play, Share2, SlidersHorizontal, Sun, Users, X } from 'lucide-react';
+import Lenis from 'lenis';
+import { ArrowRight, ArrowUpRight, ChevronDown, ChevronRight, Code2, Cpu, House, Layers, Mail, Menu, Moon, Pause, Play, Share2, SlidersHorizontal, Sun, Users, X } from 'lucide-react';
 import { projects, projectCategories } from './data/projects';
 import { teamMembers } from './data/team';
 import { BrandMark } from './components/BrandMark';
@@ -28,16 +29,21 @@ export default function App() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [dialog, setDialog] = useState(null);
   const [activeSection, setActiveSection] = useState('home');
+  const [isScrolled, setIsScrolled] = useState(false);
   const [paused, setPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const menuButton = useRef(null);
   const explicitTheme = useRef(false);
   const themeTransition = useRef(null);
+  const lenisRef = useRef(null);
 
+  // Synchronize theme token on root element and meta tag
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#050e23' : '#f4f8ff');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#080608' : '#F7F1E8');
   }, [theme]);
+
+  // System theme, reduced motion, and storage sync
   useEffect(() => {
     const preference = window.matchMedia('(prefers-color-scheme: light)');
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -57,6 +63,87 @@ export default function App() {
     window.addEventListener('storage', syncTheme);
     return () => { preference.removeEventListener('change', followSystem); motion.removeEventListener('change', syncMotion); window.removeEventListener('storage', syncTheme); };
   }, []);
+
+  // Lenis smooth-scroll initialization
+  useEffect(() => {
+    if (reducedMotion) return;
+
+    const lenis = new Lenis({
+      duration: 1.15,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1.2,
+    });
+    lenisRef.current = lenis;
+
+    let rafId;
+    function raf(time) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+    rafId = requestAnimationFrame(raf);
+
+    // Global anchor click interception for buttery-smooth scrolling
+    const handleAnchorClick = (e) => {
+      const link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+      const href = link.getAttribute('href');
+      if (!href || href === '#') return;
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        setMenuOpen(false);
+        lenis.scrollTo(target, { offset: -70 });
+        history.pushState(null, '', href);
+      }
+    };
+    document.addEventListener('click', handleAnchorClick);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      document.removeEventListener('click', handleAnchorClick);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, [reducedMotion]);
+
+  // Pause Lenis when modal dialog is open to prevent background scrolling
+  useEffect(() => {
+    if (dialog) {
+      lenisRef.current?.stop();
+    } else {
+      lenisRef.current?.start();
+    }
+  }, [dialog]);
+
+  // Track header scroll state for glass elevation
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 30);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Scroll reveal observer for section entrance choreography
+  useEffect(() => {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    const targets = document.querySelectorAll('.reveal-target');
+    targets.forEach(el => revealObserver.observe(el));
+    return () => revealObserver.disconnect();
+  }, [category]);
+
+  // Mobile menu keyboard accessibility
   useEffect(() => {
     if (!menuOpen) return;
     const onKey = event => { if (event.key === 'Escape') { setMenuOpen(false); menuButton.current?.focus(); } };
@@ -66,6 +153,8 @@ export default function App() {
     desktop.addEventListener('change', onResize);
     return () => { window.removeEventListener('keydown', onKey); desktop.removeEventListener('change', onResize); };
   }, [menuOpen]);
+
+  // Active section indicator
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => { if (entry.isIntersecting) setActiveSection(entry.target.id); });
@@ -92,11 +181,13 @@ export default function App() {
       if (themeTransition.current === transition) themeTransition.current = null;
     }).catch(() => { /* A newer toggle can supersede this visual transition. */ });
   }
+
   function openDialog(value) {
     const returnFocus = menuOpen ? menuButton.current : document.activeElement;
     setMenuOpen(false);
     setDialog({ ...value, returnFocus });
   }
+
   const openContact = () => openDialog({ type: 'contact' });
   const visible = projects.filter(project => category === 'All Work' || project.category === category);
   const featured = featuredIds.map(id => visible.find(project => project.id === id)).filter(Boolean);
@@ -105,7 +196,7 @@ export default function App() {
 
   return <div className="site" data-motion={motionPaused ? 'paused' : 'playing'}>
     <a className="skip-link" href="#main">Skip to content</a>
-    <header className="site-header">
+    <header className={`site-header${isScrolled ? ' is-scrolled' : ''}`}>
       <div className="header-inner">
         <Brand />
         <nav className="desktop-nav" aria-label="Main navigation"><a href="#work">Work</a><button onClick={() => openDialog({ type: 'info', info: studio })}>Studio</button><a href="#team">Members</a></nav>
@@ -129,16 +220,17 @@ export default function App() {
           <FloatingProjects />
         </div>
         <div className="hero-copy shell">
-          <h1 id="hero-title">Ideas into<br /><span>extraordinary.</span></h1>
+          <h1 id="hero-title" lang="sa">यथा कल्पना<br /><span>तथा रचना</span></h1>
           <p className="hero-description">We design and engineer digital experiences.<br className="desktop-break" /> From intelligent systems to thoughtful interfaces.</p>
           <div className="hero-actions"><a className="button" href="#work">Explore our work <ArrowUpRight size={17} /></a><a className="button button--outline" href="#team">Meet the makers</a></div>
           <a className="founder-byline" href="#team"><span className="avatar-stack">{teamMembers.map(member => <img key={member.id} src={member.photo} width="38" height="38" alt="" />)}</span><span>Chandan Mahapatra &amp; S Akash Dora</span><ArrowUpRight size={13} /></a>
+          <div><a href="#work" className="hero-scroll-cue" aria-label="Scroll to selected work"><span>Scroll to explore</span><ChevronDown size={14} /></a></div>
         </div>
         <div className="capability-dock" aria-label="Explore our capabilities">{capabilities.map(({ icon: Icon, ...info }) => <button key={info.title} onClick={() => openDialog({ type: 'info', info })}><span className="dock-icon"><Icon size={24} strokeWidth={1.6} /></span><span>{info.title}</span><ChevronRight size={16} className="dock-arrow" /></button>)}</div>
         <div className="motion-row"><button className="motion-toggle" disabled={reducedMotion} onClick={() => setPaused(!paused)} aria-label={reducedMotion ? 'Reduced motion enabled' : paused ? 'Play scene animation' : 'Pause scene animation'}>{motionPaused ? <Play size={12} /> : <Pause size={12} />}<span>{reducedMotion ? 'Reduced motion' : paused ? 'Play motion' : 'Pause motion'}</span></button></div>
       </section>
 
-      <section className="work-section shell" id="work" aria-labelledby="work-title" tabIndex="-1">
+      <section className="work-section shell reveal-target" id="work" aria-labelledby="work-title" tabIndex="-1">
         <div className="section-heading-row"><div><p className="section-label">01 / SELECTED WORK</p><h2 id="work-title">Proof, in every project.</h2></div><p className="section-intro">Real problems. Thoughtful technology.<br />From applied AI to intuitive products,<br />we build what matters.</p><button className={`icon-button filter-toggle${filtersOpen ? ' is-active' : ''}`} onClick={() => setFiltersOpen(!filtersOpen)} aria-label="Filter projects" aria-expanded={filtersOpen} aria-controls="project-filters"><SlidersHorizontal size={18} /></button></div>
         <div className="project-filters" id="project-filters" hidden={!filtersOpen} aria-label="Filter projects by category">{projectCategories.map(item => <button key={item} aria-pressed={category === item} onClick={() => setCategory(item)}>{item}</button>)}</div>
         <p className="sr-only" role="status">{visible.length} projects shown for {category}.</p>
@@ -150,7 +242,7 @@ export default function App() {
         {otherWork.length > 0 && <div className="project-index"><span>Also from the studio</span>{otherWork.map(project => <button key={project.id} onClick={() => openDialog({ type: 'project', project })}>{project.isUpcoming ? <span>Social platform <small>· In development</small></span> : project.id === 'tejas-2026' ? 'TEJAS 2026' : project.title}{!project.isUpcoming && <ArrowUpRight size={13} />}</button>)}</div>}
       </section>
 
-      <section className="team-section shell" id="team" aria-labelledby="team-title" tabIndex="-1">
+      <section className="team-section shell reveal-target" id="team" aria-labelledby="team-title" tabIndex="-1">
         <div className="team-intro"><p className="section-label">02 / THE PEOPLE</p><h2 id="team-title">Two minds.<br />One shared ambition.</h2><p>Different perspectives. A shared belief in technology that creates real value.<br />We build, learn, and ship together.</p></div>
         <div className="founders">{teamMembers.map(member => <article className={`founder founder--${member.id}`} key={member.id}>
           <div className="founder-photo"><img src={member.photo} alt={`${member.name}, Co-Founder and Developer`} width="320" height="320" loading="lazy" /></div>
@@ -158,7 +250,7 @@ export default function App() {
         </article>)}</div>
       </section>
 
-      <section className="contact-section shell" id="contact" aria-labelledby="contact-title">
+      <section className="contact-section shell reveal-target" id="contact" aria-labelledby="contact-title">
         <div className="contact-orb" aria-hidden="true"><BrandMark /></div>
         <div className="contact-copy"><p className="section-label">03 / YOUR NEXT CHAPTER</p><h2 id="contact-title">What could we<br /><span>build together?</span></h2><p>Every great project starts with a conversation.</p></div>
         <button className="contact-trigger" onClick={openContact}><span>Let’s talk</span><span className="contact-trigger-icon"><ArrowUpRight size={24} /></span></button>
