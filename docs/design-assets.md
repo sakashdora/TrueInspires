@@ -1,19 +1,16 @@
-# Redesign asset notes
+# True Inspire asset register
 
-The images below were generated with the built-in ImageGen tool and optimized to WebP. The current blue-glass design uses the ARGUS factory image; the earlier champagne sculpture is retained as a design asset but is no longer loaded by the page. Both founder portraits are the existing project assets.
+## Assets in the current site
 
-The current centerpiece is rendered with Three.js in `src/components/SpatialScene.jsx`: an extruded TI mark, optical lens, orbital curves, and moving satellites. The code-native tracing in `src/components/BrandMark.jsx` is shared by the navigation, fallback, and 3D scene. There is no generated screenshot behind the hero. The scene adapts to the selected theme, pauses when off-screen or the tab is hidden, and honors reduced motion and the page's pause control. A CSS/SVG emblem remains visible when WebGL or its optional module cannot initialize.
+- `public/assets/flower-orbit-hero.webp` — 1774 × 887 px, 134 KB WebP. Original cinematic blue sky, wildflower meadow, and empty iridescent lens, generated with the built-in image generation tool on 20 November 2026. The authentic TI emblem is overlaid in HTML/CSS. This is decorative hero atmosphere, not a project or client photograph.
+- `public/assets/true-inspire-logo-light.webp` and `true-inspire-emblem-light.webp` — transparent extractions of the owner-supplied black/gold logo. Used on light navigation and footer surfaces, and as the emblem in the closing section. Preserve the original mark, proportions, wordmark, and Sanskrit motto.
+- `public/assets/chandan.jpg` and `public/assets/akash.png` — existing founder portraits.
+- Project visuals rendered by `ProjectArtwork` in `src/App.jsx` — code-native editorial title plates. They are identified as artwork in the interface; no project screenshot is implied.
 
-## Sculptural identity
+**Current hero image prompt:** “Original cinematic blue-hour sky over distant hills with a pink, coral, and orange wildflower meadow along the bottom third. One large clear iridescent glass lens on the right, hollow center for a separately overlaid real brand emblem. Dark uncluttered left side for HTML copy. Realistic editorial light and petals. No person, interface, text, logo, numbers, or watermark.” Built-in image generation mode was used; the output was optimized to WebP in the project.
 
-Saved asset: [`public/assets/ti-sculpture.webp`](../public/assets/ti-sculpture.webp), 1000 × 1305, transparent background.
+## Historical assets not used by the current site
 
-Production prompt brief: Create an isolated, sculptural interpretation of the supplied True Inspire TI monogram and star, following the approved dark-and-champagne design reference. Preserve the recognizable silhouette. Use satin champagne brass and charcoal titanium, precise folded surfaces, soft studio lighting, and a transparent background. No text, pedestal, surrounding website, or additional symbols.
+`blue-horizon-hero.webp`, `ti-sculpture.webp`, and `argus-factory.webp` were generated for earlier designs. The factory scene is an illustration, not evidence of a client installation. `src/components/SpatialScene.jsx`, `ThreeCanvas.jsx`, and `ProjectPreview.jsx` are also retained historical code, not imported into the active page.
 
-## ARGUS illustration
-
-Saved asset: [`public/assets/argus-factory.webp`](../public/assets/argus-factory.webp), 1400 × 933.
-
-Production prompt brief: Create a photorealistic wide industrial factory scene with two workers in protective helmets and high-visibility workwear, viewed from behind. Use a graphite-steel and restrained amber palette, realistic machinery, and natural industrial lighting. No text, interface, detection boxes, logos, or watermark. This is an illustrative scene, not a photograph of a customer installation.
-
-The project preview interfaces are implemented in `src/components/ProjectPreview.jsx`. They are illustrative compositions, not live product screenshots or measurements. The page labels them accordingly; project links use the existing project data.
+Approved captures of RiskRule, TEJAS, CrossFire, DoseLoop, and ARGUS would improve the work archive and case pages. No such captures were found in this checkout. Browser security blocked transfer of a live RiskRule screenshot into the repository, and that restriction was respected.

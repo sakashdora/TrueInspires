@@ -1,0 +1,17 @@
+{
+  "name": "True Inspire",
+  "short_name": "True Inspire",
+  "description": "Independent web design and development studio in Odisha, India.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06274B",
+  "theme_color": "#06274B",
+  "icons": [
+    {
+      "src": "/assets/true-inspire-logo-blue-monogram-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

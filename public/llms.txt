@@ -1,0 +1,18 @@
+# True Inspire
+
+True Inspire is an independent web design and development studio in Odisha, India. The studio designs and builds business websites, education and event experiences, digital products, and technical web foundations.
+
+## Primary pages
+
+- / — Studio overview, selected work, services, process, and founders.
+- /work/ — Project archive.
+- /services/ — Business websites, education and events, digital products, and performance foundations.
+- /studio/ — Founder and studio information.
+- /contact/ — Local project-brief tool and verified founder contact routes.
+- /privacy/ — Current handling of project-brief data and external links.
+
+## Important accuracy notes
+
+- Project artwork in the archive is editorial title artwork; each case study identifies its verified scope and destinations.
+- The project-brief form currently prepares information in the visitor's browser. It does not deliver entries to a True Inspire server.
+- Contact links point to the founders' verified external profiles.

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { BrandMark, brandPaths } from './BrandMark';
+import { BrandMark } from './BrandMark';
+import { brandPaths } from '../data/brandPaths';
 
 export default function SpatialScene({ theme, paused }) {
   const hostRef = useRef(null);
