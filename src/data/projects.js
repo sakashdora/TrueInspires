@@ -1,5 +1,17 @@
 export const projects = [
   {
+    id: 'chaiwala',
+    title: 'Chaiwala',
+    subtitle: 'A Website Experience for a Tea Brand Across Generations',
+    description: 'A public-facing website for Chaiwala, designed to introduce the brand and invite visitors into its tea-led experience across generations.',
+    category: 'Websites & Landing Pages',
+    badgeColor: 'badge-amber',
+    accentColor: '#D4A043',
+    collaboration: 'Built by the True Inspire team',
+    live: 'https://chai-wala-six.vercel.app/v2/',
+    tags: ['Brand website', 'Landing page', 'Responsive experience', 'Food & beverage']
+  },
+  {
     id: 'argus-ai',
     title: 'ARGUS AI',
     subtitle: 'Edge-First Industrial Safety & Hazard Intelligence System',
